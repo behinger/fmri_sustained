@@ -33,52 +33,54 @@ widthArray = (-halfWidthOfGrid) : halfWidthOfGrid;  % widthArray is used in crea
 
 if isfield(params,'radial')&& params.radial
     
-   dist = sqrt(x.^2+y.^2);
-   
-   stimulusMatrix = sin(radiansPerPixel*dist+params.phaseGrating);
+    dist = sqrt(x.^2+y.^2);
+    
+    stimulusMatrix = sin(radiansPerPixel*dist+params.phaseGrating);
 elseif isfield(params,'pinkNoiseFiltered')&&params.pinkNoiseFiltered
-%%
+    %%
     dist = sqrt(x.^2+y.^2);
     p = rand(size(dist))*2*pi;
     stimulusMatrix = real(ifft2(fftshift(dist>nCycles-1&dist<nCycles+1).*exp(1i*p)));
-%     d = zeros(size(dist));
+    %     d = zeros(size(dist));
     
-%     d(514,531) = 1;
-%     d(531,531) = 1;
-%     d(531,514) = 1;
-%     d(514,514) = 1;
+    %     d(514,531) = 1;
+    %     d(531,531) = 1;
+    %     d(531,514) = 1;
+    %     d(514,514) = 1;
     
-%     stimulusMatrix = real(ifft2(fftshift(d).*exp(1i*p)));
-
+    %     stimulusMatrix = real(ifft2(fftshift(d).*exp(1i*p)));
+    
     stimulusMatrix = stimulusMatrix - min(stimulusMatrix(:));
     
     stimulusMatrix = stimulusMatrix./max(stimulusMatrix(:)); % between 0 and 1
     stimulusMatrix = stimulusMatrix.*2 - 1; %between -1 and 1
     
-%         figure,imagesc(stimulusMatrix)
+    %         figure,imagesc(stimulusMatrix)
 elseif isfield(params,'plaid') && params.plaid>0
     % params.plaid contains an integer from 1:length(params.phases), we
-    % want to generate alle possible combinations in a 
-    tmp = sqrt(length(params.phases));
-    phase_x = linspace(0,2*pi,floor(tmp)+1);
-    phase_x = phase_x(1:end-1);
-    phase_y = linspace(0,2*pi,ceil(tmp)+1);
-    phase_y = phase_y(1:end-1);
-    [phase_x,phase_y] = meshgrid(phase_x,phase_y);
+    % want to generate alle possible combinations in a
+%     tmp = sqrt(length(params.phases));
+%     phase_x = linspace(0,2*pi,floor(tmp)+1);
+%     phase_x = phase_x(1:end-1);
+%     phase_y = linspace(0,2*pi,ceil(tmp)+1);
+%     phase_y = phase_y(1:end-1);
+%     [phase_x,phase_y] = meshgrid(phase_x,phase_y);
     
-    assert(length(phase_x(:))==length(params.phases))
-    stimulusMatrix = (sin(radiansPerPixel * x+phase_x(params.plaid)) + sin(radiansPerPixel*y+phase_y(params.plaid)))/2;
+%     assert(length(phase_x(:))==length(params.phases))
+%     stimulusMatrix = (sin(radiansPerPixel * x+phase_x(params.plaid)) + sin(radiansPerPixel*y+phase_y(params.plaid)))/2;
 
+    stimulusMatrix = (sin(radiansPerPixel * x+params.phaseGrating+pi) + sin(radiansPerPixel*y+params.phaseGrating+pi))/2;
+    
 else
-% Creates a sinusoidal grating, where the period of the sinusoid is 
-% approximately equal to "pixelsPerGratingPeriod" pixels.
-% Note that each entry of gratingMatrix varies between minus one and
-% one; -1 <= gratingMatrix(x0, y0)  <= 1
-
-% the grating is oriented vertically unless otherwise specified.
-
-stimulusMatrix = sin(radiansPerPixel * x + params.phaseGrating);
-
+    % Creates a sinusoidal grating, where the period of the sinusoid is
+    % approximately equal to "pixelsPerGratingPeriod" pixels.
+    % Note that each entry of gratingMatrix varies between minus one and
+    % one; -1 <= gratingMatrix(x0, y0)  <= 1
+    
+    % the grating is oriented vertically unless otherwise specified.
+    
+    stimulusMatrix = sin(radiansPerPixel * x + params.phaseGrating);
+    
 end
 % Because the difference between Lmax_rgb and background is not equal to
 % the difference between Lmin_rgb and background (the differences are equal

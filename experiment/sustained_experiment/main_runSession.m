@@ -28,7 +28,7 @@ fprintf('Setting up parameters \n')
 if cfg.debug
     input('!!!DEBUGMODE ACTIVATED!!! - continue with enter')
     Screen('Preference', 'SkipSyncTests', 1)
-     PsychDebugWindowConfiguration;
+%      PsychDebugWindowConfiguration;
 end
 
 
@@ -38,7 +38,7 @@ cfg = setup_parameters(cfg);
 
 % Subject ID
 if cfg.debug
-    SID = '99';
+    SID = '98';
 else
 SID = input('Enter subject ID:','s');
 end

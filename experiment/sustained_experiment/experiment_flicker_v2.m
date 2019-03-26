@@ -29,10 +29,10 @@ expectedtimings= nan(6,length(randomization.run));
 ntrial = length(randomization.subject);
 % trialDistractor = setup_distractortimings(params,ntrial,params.ITI); %target only in ITI
 trialDistractor = setup_distractortimings(params,ntrial,params.trialLength-2); % only when the stimulus is shown, but not in the first and last second
-
 % not in the first second
 for k = 1:length(trialDistractor)
-    trialDistractor{k} = trialDistractor{k}+1;
+    trialDistractor{k} = round(trialDistractor{k}+1); % We want to changes to be synchronous with the phase-switches
+
 end
 
 %--------------------------------------------------------------------------
@@ -84,8 +84,8 @@ for trialNum = 1:ntrial
         expectedTime = expectedTime;% + params.ITI;
     end
     
-    singleStimDuration = (1/randomization.condition{trialNum})/2; %divided by two because half of it will be stimulus, half mask
-    
+    singleStimDuration = (1/randomization.condition(trialNum))/2; %divided by two because half of it will be stimulus, half mask
+    catchDuration = 1;%s
     warning('BalanceStimulation Time!!')
     
     %% FIRST STIMULUS
@@ -96,40 +96,71 @@ for trialNum = 1:ntrial
     display(distractorTiming)
     phase_ix = randomization.phase(trialNum); % just so every trial starts with a different phase, could be random as well
     lastchange = 0;
-
     while true
         
         
-        fprintf('%i\t %f/%f \n',trialNum,expectedTime-singleStimDuration,expectedTime+singleStimDuration)
-        if expectedTime - lastchange > 2
+        fprintf('%i\t %f/%f \n',trialNum,expectedTime,expectedTime+singleStimDuration)
+        
+        % Catch Trial on Stimulus?
+        if any(distractorTiming>(expectedTime) & distractorTiming<(expectedTime+catchDuration))
+            rotationDecrement = (randi([0,1],1)*2-1) * 45/4;
+            warning('rotation! \n')
+        else
+            rotationDecrement = 0;
+        end
+        
+        if expectedTime - lastchange >= 1
             % every second change the phase of the stimulus and choose a
             % new mask
-            phase_ix = randi(length(cfg.stimTex),1);
+            
+            % Choose a new phase that is at least 2 different from the old
+            % phase in order to make large jumps more prominent
+            new_phase = randi(length(cfg.stimTex)-2,1)+2;
+            phase_ix = phase_ix+new_phase;
+            % we could have a phase_ix higher than the length of stimuli,
+            % wrap around, add+1 because mod(12,12) = 0;
+            phase_ix = mod(phase_ix,length(cfg.stimTex))+1;
             lastchange = expectedTime;
             fprintf('changed phase\n')
         end
 
-        % Display Catch Trial?
-        if any(distractorTiming>(expectedTime-singleStimDuration) & distractorTiming<(expectedTime+singleStimDuration))
-            Screen('DrawTexture',cfg.win,cfg.stimTexCatch(phase_ix),[],[],params.refOrient(randomization.stimulus(trialNum)));
-            warning('CATCH ME IF YOU CAN')
-        else
-            % normal trial
-            Screen('DrawTexture',cfg.win,cfg.stimTex(phase_ix),[],[],params.refOrient(randomization.stimulus(trialNum)));
-        end
+
+        Screen('DrawTexture',cfg.win,cfg.stimTex(phase_ix),[],[],rotationDecrement+params.refOrient(randomization.stimulus(trialNum)));
         draw_fixationdot(cfg,params.dotSize)
         Screen('DrawingFinished', cfg.win);
-        
-        
         stimOnset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi)-startTime;
+        
         % how long should the stimulus be on?
         expectedTime = expectedTime + singleStimDuration;
         
-        %draw mask        
-        Screen('DrawTexture',cfg.win,cfg.stimTexMask(phase_ix),[],[],0);
-        % random mask:
-        %         r = randi(length(cfg.stimTexMask));
-        %         Screen('DrawTexture',cfg.win,cfg.stimTexMask(r),[],[],0);
+        %% Mask       
+        fprintf('%i\t %f/%f \n',trialNum,expectedTime,expectedTime+singleStimDuration)
+        % Catch Trial on Mask
+        if any(distractorTiming>(expectedTime) & distractorTiming<(expectedTime+catchDuration))
+            rotationDecrement = (randi([0,1],1)*2-1) * 45/4;
+            warning('rotation! \n')
+        else
+            rotationDecrement = 0;
+        end
+        
+        if expectedTime - lastchange >= 1
+            % every second change the phase of the stimulus and choose a
+            % new mask
+            
+            % Choose a new phase that is at least 2 different from the old
+            % phase in order to make large jumps more prominent
+            new_phase = randi(length(cfg.stimTex)-2,1)+2;
+            phase_ix = phase_ix+new_phase;
+            % we could have a phase_ix higher than the length of stimuli,
+            % wrap around, add+1 because mod(12,12) = 0;
+            phase_ix = mod(phase_ix,length(cfg.stimTex))+1;
+            lastchange = expectedTime;
+            fprintf('changed phase\n')
+        end
+
+        
+        
+        Screen('DrawTexture',cfg.win,cfg.stimTexMask(phase_ix),[],[],rotationDecrement+params.refOrient(randomization.stimulus(trialNum)));
         draw_fixationdot(cfg,params.dotSize)
         Screen('DrawingFinished', cfg.win);
         stimOffset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi)-startTime;
