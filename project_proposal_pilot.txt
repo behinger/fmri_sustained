@@ -1,0 +1,7 @@
+Attention & Visual Sustained Activity
+
+A sudden visual stimulus onset elicits a transient response followed by a sustained steady state. Not much is known about the sustained response.  Many studies (MUA, LFP, Behavioural, TMS, EEG) suggest recurrent activity as the source of this steady-state transient activity (either by cortico-cortico feedback or intra-area cortical dynamics).
+
+Using high-field layer fMRI we (indirectly) show that the sustained activity follows the previously invasively found layer-profile, with stronger activity during the sustained phase in the agranular layers.  We show this by interrupting the recurrent phase. In addition previous invasive data suggest that attention should enhance the sustained response, we therefore add an additional attention manipulation to our paradigm.
+
+This study translates recent invasive findings to the human brain and shows that laminar fMRI, despite its low temporal resolution, can be used to study the recurrent sustained response to visual stimuli.
