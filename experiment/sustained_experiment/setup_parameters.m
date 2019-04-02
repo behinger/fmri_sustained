@@ -29,7 +29,7 @@ cfg.flicker.stimSize = 12; % Diameter in degrees
 cfg.flicker.refOrient = [45, 135]; % reference stimuli are 45 and 135 degrees
 cfg.flicker.spatialFrequency = 1; % cpd
 
-cfg.flicker.spatialFrequency_catch = 1.5;
+cfg.flicker.spatialFrequency_catch = 1.25;
 
 cfg.flicker.contrast = 1; % max contrast
 cfg.flicker.start_linear_decay_in_degree = 0.5;

@@ -12,13 +12,13 @@ inner_degree=0;
 size_inner_most_circle = degrees2pixels(inner_degree, cfg.distFromScreen, cfg.pixelsPerCm);
 start_linear_decay = degrees2pixels(params.start_linear_decay_in_degree, cfg.distFromScreen,cfg.pixelsPerCm);
 
-nCycles = params.stimSize*params.spatialFrequency; % number of cycles in a stimulus
+nCycles = params.stimSize.*params.spatialFrequency; % number of cycles in a stimulus
 
 % compute the pixels per grating period
-pixelsPerGratingPeriod = width / nCycles;
+pixelsPerGratingPeriod = width ./ nCycles;
 
-spatialFrequency = 1 / pixelsPerGratingPeriod; % How many periods/cycles are there in a pixel?
-radiansPerPixel = spatialFrequency * (2 * pi); % = (periods per pixel) * (2 pi radians per period)
+spatialFrequency = 1 ./ pixelsPerGratingPeriod; % How many periods/cycles are there in a pixel?
+radiansPerPixel = spatialFrequency .* (2 * pi); % = (periods per pixel) * (2 pi radians per period)
 
 
 
@@ -69,7 +69,7 @@ elseif isfield(params,'plaid') && params.plaid>0
 %     assert(length(phase_x(:))==length(params.phases))
 %     stimulusMatrix = (sin(radiansPerPixel * x+phase_x(params.plaid)) + sin(radiansPerPixel*y+phase_y(params.plaid)))/2;
 
-    stimulusMatrix = (sin(radiansPerPixel * x+params.phaseGrating+pi) + sin(radiansPerPixel*y+params.phaseGrating+pi))/2;
+    stimulusMatrix = (sin(radiansPerPixel(1) * x+params.phaseGrating+pi) + sin(radiansPerPixel(2)*y+params.phaseGrating+pi))/2;
     
 else
     % Creates a sinusoidal grating, where the period of the sinusoid is

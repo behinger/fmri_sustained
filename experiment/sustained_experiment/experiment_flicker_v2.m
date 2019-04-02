@@ -98,8 +98,9 @@ for trialNum = 1:ntrial
     lastchange = 0;
     while true
         
-        
+        catchtype = 'spatialFreq';
         fprintf('%i\t %f/%f \n',trialNum,expectedTime,expectedTime+singleStimDuration)
+        
         
         % Catch Trial on Stimulus?
         if any(distractorTiming>(expectedTime) & distractorTiming<(expectedTime+catchDuration))
@@ -124,8 +125,12 @@ for trialNum = 1:ntrial
             fprintf('changed phase\n')
         end
 
-
-        Screen('DrawTexture',cfg.win,cfg.stimTex(phase_ix),[],[],rotationDecrement+params.refOrient(randomization.stimulus(trialNum)));
+        if strcmp(catchtype,'spatialFreq') && rotationDecrement ~=0
+            Screen('DrawTexture',cfg.win,cfg.stimTexCatch(phase_ix),[],[],params.refOrient(randomization.stimulus(trialNum)));
+        else 
+            % Always 0 or in rotation condition
+            Screen('DrawTexture',cfg.win,cfg.stimTex(phase_ix),[],[],rotationDecrement+params.refOrient(randomization.stimulus(trialNum)));
+        end
         draw_fixationdot(cfg,params.dotSize)
         Screen('DrawingFinished', cfg.win);
         stimOnset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi)-startTime;
@@ -159,8 +164,11 @@ for trialNum = 1:ntrial
         end
 
         
-        
-        Screen('DrawTexture',cfg.win,cfg.stimTexMask(phase_ix),[],[],rotationDecrement+params.refOrient(randomization.stimulus(trialNum)));
+        if strcmp(catchtype,'spatialFreq') && rotationDecrement ~=0
+            Screen('DrawTexture',cfg.win,cfg.stimTexMaskCatch(phase_ix),[],[],params.refOrient(randomization.stimulus(trialNum)));
+        else
+            Screen('DrawTexture',cfg.win,cfg.stimTexMask(phase_ix),[],[],rotationDecrement+params.refOrient(randomization.stimulus(trialNum)));
+        end
         draw_fixationdot(cfg,params.dotSize)
         Screen('DrawingFinished', cfg.win);
         stimOffset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi)-startTime;
