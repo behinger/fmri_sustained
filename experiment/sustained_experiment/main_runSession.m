@@ -28,7 +28,7 @@ fprintf('Setting up parameters \n')
 if cfg.debug
     input('!!!DEBUGMODE ACTIVATED!!! - continue with enter')
     Screen('Preference', 'SkipSyncTests', 1)
-%      PsychDebugWindowConfiguration;
+     PsychDebugWindowConfiguration;
 end
 
 

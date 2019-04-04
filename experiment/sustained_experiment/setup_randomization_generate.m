@@ -16,7 +16,8 @@ for runNum = 1:numRuns
     addpath('.\..\Functions');
     
     % determine whether we use same or different stimuli trialtype
-    condition_dict = [4,2,0.5]; %=> 2*50ms, 2*125ms, 2*1000ms
+    condition_dict = [6,2,0.5]; %=> 2*50ms, 2*125ms, 2*1000ms
+%     condition_dict = [18,12,2]; %=> 2*50ms, 2*125ms, 2*1000ms
     condition = repmat([0 1,2],1,numTrials/length(condition_dict));
     
     

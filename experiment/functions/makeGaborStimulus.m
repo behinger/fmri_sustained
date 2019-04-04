@@ -8,7 +8,8 @@ assert(all(isfield(params,{'contrast','stimSize','phaseGrating','spatialFrequenc
 [~, Lmin_rgb, Lmax_rgb] = calibrate_lum(params.contrast, cfg.computer_environment,cfg.mri_scanner);
 
 width = degrees2pixels(params.stimSize, cfg.distFromScreen, cfg.pixelsPerCm);
-inner_degree=0;
+inner_degree=cfg.flicker.dotSize(1)*1.1;
+
 size_inner_most_circle = degrees2pixels(inner_degree, cfg.distFromScreen, cfg.pixelsPerCm);
 start_linear_decay = degrees2pixels(params.start_linear_decay_in_degree, cfg.distFromScreen,cfg.pixelsPerCm);
 
@@ -93,6 +94,9 @@ stimulusMatrix(stimulusMatrix > 0) = stimulusMatrix(stimulusMatrix > 0) * rgb_ra
 
 % Make a fading annulus, to use as a mask.
 annulusMatrix = makeLinearMaskCircleAnn(width+1,width+1,size_inner_most_circle,start_linear_decay,width/2);
+
+
+
 stimulusMatrix = stimulusMatrix .* annulusMatrix;
 
 %Make the grating
