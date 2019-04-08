@@ -19,7 +19,7 @@ cfg = setup_stimuli(cfg,params); % adapt must be a struct of cfg, e.g. cfg.adapt
 
 %--------------------------------------------------------------------------
 % setup kb queue
-setup_kbqueue(0,params); % 0 = deviceID
+setup_kbqueue([],params); % 0 = deviceID
 responses = [];
 stimtimings = nan(6,length(randomization.run));
 expectedtimings= nan(6,length(randomization.run));

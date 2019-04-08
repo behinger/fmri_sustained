@@ -1,6 +1,6 @@
 % Wait for scanner trigger using keyboard input (trigger comes in as a 5)
 function waitForScanTrigger_KB(cfg)
-if nargin == 1&& cfg.mriPulse && ~isnan(cfg.bitsi)
+if nargin == 1&& cfg.mriPulse && strcmp(class(cfg.bitsi),'Bitsi_Scanner')
     cfg.bitsi.getResponse(60,true)
     return
 end

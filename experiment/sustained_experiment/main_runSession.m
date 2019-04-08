@@ -1,4 +1,4 @@
-% function Essen_RunExperiment
+%% function Essen_RunExperiment
 % Run through experiment. Does numRuns runs of attention experiment
 % and one run of orientation localizer.
 
@@ -28,7 +28,7 @@ fprintf('Setting up parameters \n')
 if cfg.debug
     input('!!!DEBUGMODE ACTIVATED!!! - continue with enter')
     Screen('Preference', 'SkipSyncTests', 1)
-%      PsychDebugWindowConfiguration;
+     %PsychDebugWindowConfiguration;
 end
 
 
@@ -140,42 +140,3 @@ end
 % call function to close window and clean up
 
 safeQuit;
-
-function safeQuit
-
-% Close window
-Screen('Close');
-Screen('Closeall');
-%
-% Clean up
-try
-    jheapcl; % clean the java heap space
-catch
-    disp('Could not clean java heap space');
-end
-
-disp('Quit safely');
-end
-
-function waitQKey
-fprintf('press Q to safequit ... ')
-
-for waitTime = 1:5
-    fprintf('%i..',waitTime)
-    % Safe quit routine - hold q to quit
-    WaitSecs(1);
-    [keyPr,~,key,~] = KbCheck;
-    key = find(key);
-    if keyPr == 1 && strcmp(KbName(key(1)), 'q')
-        inp = input('Are you sure you want to quit the MAIN experiment (y/n)','s');
-        if strcmp(inp,y)
-            safeQuit;
-            return
-        end
-    end
-    
-end
-fprintf(' - SafeQuit End \n')
-
-end
-% end

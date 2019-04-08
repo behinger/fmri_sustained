@@ -13,7 +13,7 @@ randomization = struct('trial',[],'condition',[],'stimulus',[],'run',[],'subject
 
 for runNum = 1:numRuns
     % Path
-    addpath('.\..\Functions');
+    addpath(fullfile('..','functions'));
     
     % determine whether we use same or different stimuli trialtype
     condition_dict = [6,2,0.5]; %=> 2*50ms, 2*125ms, 2*1000ms
@@ -40,7 +40,7 @@ assert(unique(structfun(@length,randomization)) == numTrials * numRuns)
 if ~exist('randomizations','dir')
     mkdir('randomizations')
 end
-save(['.\randomizations\subject', num2str(subject), '_variables.mat'], 'randomization');
+save(fullfile('randomizations',['subject' num2str(subject), '_variables.mat']), 'randomization');
 if nargout == 1
     varargout{1} = randomization;
 end

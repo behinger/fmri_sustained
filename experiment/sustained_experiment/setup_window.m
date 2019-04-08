@@ -29,11 +29,11 @@ KbName('UnifyKeyNames')
 Screen('DrawText',cfg.win,'Estimating monitor flip interval...', 100, 100);
 Screen('DrawText',cfg.win,'(This may take up to 20s)', 100, 120);
 Screen('Flip',cfg.win);
-if cfg.debug
-    halfifi = 1/60;
-else
+% if cfg.debug
+%     halfifi = 1/60;
+% else
 halfifi = Screen('GetFlipInterval', cfg.win, 100, 0.00005, 20);
-end
+% end
 cfg.halfifi = halfifi/2;
 
 
