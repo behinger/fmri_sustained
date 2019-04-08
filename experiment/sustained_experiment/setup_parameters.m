@@ -53,9 +53,9 @@ cfg.flicker.ITI = cfg.flicker.trialLength;%2*cfg.TR;
 cfg.flicker.dotSize = 1.5*[0.25 0.06]; % Size of fixation dot in pixels
 cfg.flicker.increment = 0.25; % Increment to increase thresholds by
 
-cfg.flicker.targetsPerTrial = 1; % on average we will have one flicker per ~10s
+cfg.flicker.targetsPerTrial = 1.5; % on average we will have 1.5 flicker per Trial
 cfg.flicker.targetsTimeDelta = 2;%s flicker have to be at least distance of 2s
-cfg.flicker.targetsColor = 1; % percent
+cfg.flicker.targetsColor = 0.5; % percent
 cfg.flicker.targetsDuration = 0.1;% flicker for 100ms
 
 cfg.flicker.keys = [KbName('y') KbName('r') KbName('b') KbName('g') 49, 50, 51, 52]; %copied from essen_localiser_v4

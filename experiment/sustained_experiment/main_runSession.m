@@ -28,7 +28,7 @@ fprintf('Setting up parameters \n')
 if cfg.debug
     input('!!!DEBUGMODE ACTIVATED!!! - continue with enter')
     Screen('Preference', 'SkipSyncTests', 1)
-     PsychDebugWindowConfiguration;
+%      PsychDebugWindowConfiguration;
 end
 
 
@@ -129,7 +129,7 @@ if cfg.do_mainTask
 end
 
 %% Do retinotopy
-if cfg.do_retinotopy
+if cfg.do_retinotopyex
     fprintf('Starting with retinotopy')
     DrawFormattedText(cfg.win, 'Moving on to Retinotopy localizer...', 'center', 'center');
     Screen('Flip',cfg.win);

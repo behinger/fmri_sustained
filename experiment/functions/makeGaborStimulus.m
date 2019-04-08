@@ -8,7 +8,7 @@ assert(all(isfield(params,{'contrast','stimSize','phaseGrating','spatialFrequenc
 [~, Lmin_rgb, Lmax_rgb] = calibrate_lum(params.contrast, cfg.computer_environment,cfg.mri_scanner);
 
 width = degrees2pixels(params.stimSize, cfg.distFromScreen, cfg.pixelsPerCm);
-inner_degree=cfg.flicker.dotSize(1)*1.1;
+inner_degree=cfg.flicker.dotSize(1)*0.8;
 
 size_inner_most_circle = degrees2pixels(inner_degree, cfg.distFromScreen, cfg.pixelsPerCm);
 start_linear_decay = degrees2pixels(params.start_linear_decay_in_degree, cfg.distFromScreen,cfg.pixelsPerCm);
