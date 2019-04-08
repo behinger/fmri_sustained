@@ -64,7 +64,7 @@ cfg.flicker.targetsDuration = 0.1;% flicker for 100ms
 
 
 cfg.localizer = cfg.flicker;
-cfg.localizer.numBlocks = 20; % Total number of stimulus blocks (half as many per orientation)
+cfg.localizer.numBlocks = 10; % Total number of stimulus blocks (half as many per orientation)
 if cfg.debug
     cfg.localizer.numBlocks=5;
 end
@@ -117,8 +117,8 @@ cfg.bitsi_scanner   = nan;
 cfg.bitsi_buttonbox = nan;
 if cfg.mriPulse == 1
     try
-        cfg.bitsi_scanner   = Bitsi_Scanner('com1');
-        cfg.bitsi_buttonbox = Bitsi_Scanner('com5');
+        cfg.bitsi_scanner   = Bitsi_Scanner('/dev/ttyS0');
+        cfg.bitsi_buttonbox = Bitsi_Scanner('/dev/ttyS5');
         fprintf('Bitsi Scanner initialized\n')
         
     catch

@@ -13,10 +13,10 @@ cfg.do_localizer = 0;
 cfg.do_mainTask  = 1;
 cfg.do_retinotopy= 0;
 
-cfg.debug = 1; % Check debugmode
+cfg.debug = 0; % Check debugmode
 
-cfg.computer_environment = 't480s'; % could be "mri", "dummy", "work_station", "behav"
-cfg.mri_scanner = 'essen'; % could be "trio", "avanto","prisma", "essen"
+cfg.computer_environment = 'dummy'; % could be "mri", "dummy", "work_station", "behav"
+cfg.mri_scanner = 'prisma'; % could be "trio", "avanto","prisma", "essen"
 
 cfg.CAIPI = 1;
 cfg.numRuns = 8; % Number of runs
@@ -28,7 +28,7 @@ fprintf('Setting up parameters \n')
 if cfg.debug
     input('!!!DEBUGMODE ACTIVATED!!! - continue with enter')
     Screen('Preference', 'SkipSyncTests', 1)
-     PsychDebugWindowConfiguration;
+%      PsychDebugWindowConfiguration;
 end
 
 
@@ -95,7 +95,7 @@ if cfg.do_localizer
     Screen('Flip',cfg.win);
     experiment_localizerOrientation(cfg,randomization.subject(1));
     fprintf('Localizer Done\n')
-    waitQKey
+    waitQKey(cfg)
     
 end
 if cfg.writtenCommunication
@@ -105,7 +105,7 @@ end
 if cfg.do_mainTask
     fprintf('Starting with main Task')
     
-    for curRun = 4 %numRuns % is a sorted list of runs
+    for curRun = 1:4 %numRuns % is a sorted list of runs
         fprintf('Run %i from %i \n',curRun,length(numRuns))
         fprintf('Drawing subject instructions\n')
         
@@ -118,7 +118,7 @@ if cfg.do_mainTask
             text = ['Moving on to run ', num2str(curRun+1), ' of ', num2str(numRuns), '...'];
             DrawFormattedText(cfg.win, text, 'center', 'center');
             Screen('Flip',cfg.win);
-            waitQKey
+            waitQKey(cfg)
             
         end
         if cfg.writtenCommunication
@@ -129,14 +129,14 @@ if cfg.do_mainTask
 end
 
 %% Do retinotopy
-if cfg.do_retinotopyex
+if cfg.do_retinotopy
     fprintf('Starting with retinotopy')
     DrawFormattedText(cfg.win, 'Moving on to Retinotopy localizer...', 'center', 'center');
     Screen('Flip',cfg.win);
-    waitQKey
+    waitQKey(cfg)
     experiment_retinotopy(cfg,randomization.subject(1))
 end
 % -----------------------------------------------------------------
 % call function to close window and clean up
 
-safeQuit;
+safeQuit(cfg);

@@ -1,5 +1,10 @@
 
-function waitQKey
+function waitQKey(cfg)
+
+
+if nargin ==0
+    cfg = 0;
+end
 fprintf('press Q to safequit ... ')
 
 for waitTime = 1:5
@@ -11,7 +16,7 @@ for waitTime = 1:5
     if keyPr == 1 && strcmp(KbName(key(1)), 'q')
         inp = input('Are you sure you want to quit the MAIN experiment (y/n)','s');
         if strcmp(inp,y)
-            safeQuit;
+            safeQuit(cfg);
             return
         end
     end

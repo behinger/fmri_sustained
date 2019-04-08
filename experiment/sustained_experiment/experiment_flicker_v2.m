@@ -1,6 +1,8 @@
 function experiment_flicker_v2(cfg,randomization)
 %--------------------------------------------------------------------------
-
+cfg.bitsi_buttonbox.clearResponses;
+cfg.bitsi_scanner.clearResponses;
+cfg.numSavedResponses = 0;
 subjectid = randomization.subject(1);
 runid = randomization.run(1);
 
@@ -78,12 +80,12 @@ while ~any(clicks)
             introtex = cfg.stimTex(1);
         end
     end
-    Screen('DrawTexture',cfg.win,introtex,[],OffsetRect(CenterRect([0 0, cfg.stimsize],cfg.rect),cfg.width/4,0));
+    Screen('DrawTexture',cfg.win,introtex,[],OffsetRect(CenterRect([0 0, 0.5*cfg.stimsize],cfg.rect),cfg.width/4,0));
     
     
     
     [~,~,~] = DrawFormattedText(cfg.win, instructions, 'left', 'center'); % requesting 3 arguments disables clipping ;)
-    draw_fixationdot(cfg,cfg.flicker.dotSize,0,colorInside,cfg.width/2,cfg.height/2)
+    draw_fixationdot(cfg,cfg.flicker.dotSize,0,colorInside,cfg.width/4*3,cfg.height/2)
     
     Screen('Flip',cfg.win);
     
@@ -255,17 +257,21 @@ for trialNum = 1:ntrial
     while true
         
         % only if we don't have a keyboard or bitsi input break
-        if (isnan(cfg.bitsi_buttonbox) && ~KbEventAvail())  || (~(isnan(cfg.bitsi_buttonbox)) &&cfg.bitsi_scanner.numberOfResponses()==0)
+        if ~strcmp(class(cfg.bitsi_buttonbox),'Bitsi_Scanner')
+            if ~KbEventAvail()
             break
-        end
-        
-        if isnan(cfg.bitsi_buttonbox)
-            evt = KbEventGet();
+            end
+             evt = KbEventGet();
         else
             evt = struct();
-            [response,timestamp] = cfg.bitsi_scanner.getResponse(60,true);
+            % wait max 0.1s, but we should not reach here anyway if there
+            % are no buttons left
+            [response,timestamp] = cfg.bitsi_buttonbox.getResponse(.1,true);
+            if response == 0
+                break
+            end
             evt.Time = timestamp;
-            evt.response = response;
+            evt.response = char(response);
             
             if lower(evt.response) == evt.response
                 % lower letters for rising
@@ -333,8 +339,9 @@ save_and_quit;
         catch
             disp('Could not clean java heap space');
         end
+   
+        disp('Quit SubFunction safely');
         
-        disp('Quit safely');
     end
 
 end

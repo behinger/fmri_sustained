@@ -1,5 +1,5 @@
 
-function safeQuit
+function safeQuit(cfg)
 
 % Close window
 Screen('Close');
@@ -11,6 +11,7 @@ try
 catch
     disp('Could not clean java heap space');
 end
-
+cfg.bitsi_buttonbox.close
+cfg.bitsi_scanner.close
 disp('Quit safely');
 end
