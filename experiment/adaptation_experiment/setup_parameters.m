@@ -117,7 +117,11 @@ cfg = setup_environment(cfg);
 
 if cfg.mriPulse == 1
     try
+        if ispc
         cfg.bitsi = Bitsi_Scanner('com1');
+        else
+            cfg.bitsi = Bitsi_Scanner('/dev/ttyS0'); % ttyS5
+        end
         fprintf('Bitsi Scanner initialized\n')
         
     catch
