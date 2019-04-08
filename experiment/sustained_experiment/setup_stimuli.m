@@ -35,8 +35,10 @@ for i = 1:length(params.phases)
     cfg.stimTexMask(i) = Screen('MakeTexture', cfg.win, stimMask);
     cfg.stimTexCatch(i) = Screen('MakeTexture', cfg.win, stimCatch);
     cfg.stimTexMaskCatch(i) = Screen('MakeTexture', cfg.win, maskCatch);
+    
 end
 
+cfg.stimsize = size(stim);
 
 
 % Preload textures into video memory

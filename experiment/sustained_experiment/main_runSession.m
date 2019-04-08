@@ -19,7 +19,7 @@ cfg.computer_environment = 't480s'; % could be "mri", "dummy", "work_station", "
 cfg.mri_scanner = 'essen'; % could be "trio", "avanto","prisma", "essen"
 
 cfg.CAIPI = 1;
-cfg.numRuns = 6; % Number of runs
+cfg.numRuns = 8; % Number of runs
 cfg.numTrials = 12 ; % Number of trials in a run
 cfg.writtenCommunication = 0;
 
@@ -28,7 +28,7 @@ fprintf('Setting up parameters \n')
 if cfg.debug
     input('!!!DEBUGMODE ACTIVATED!!! - continue with enter')
     Screen('Preference', 'SkipSyncTests', 1)
-     %PsychDebugWindowConfiguration;
+     PsychDebugWindowConfiguration;
 end
 
 

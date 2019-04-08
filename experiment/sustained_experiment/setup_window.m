@@ -14,8 +14,8 @@ end
 cfg.width = cfg.rect(3);
 cfg.height = cfg.rect(4);
 
-Screen('TextFont',cfg.win, 'Arial');
-Screen('TextSize',cfg.win, 20);
+% Screen('TextFont',cfg.win, 'Arial');
+% Screen('TextSize',cfg.win, 20);
 
 if ~cfg.debug
     Priority(1); % Set priority

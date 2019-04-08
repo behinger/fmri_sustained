@@ -9,9 +9,11 @@ end
 assert(ceil(numTrials/6) == floor(numTrials/6)) % check that numTrials is divisble by 6
 
 rng(subject) % reset the random seed to make the randomization repeatable
-randomization = struct('trial',[],'condition',[],'stimulus',[],'run',[],'subject',[],'phase',[]);
-
+randomization = struct('trial',[],'condition',[],'stimulus',[],'run',[],'subject',[],'phase',[],'attention',[]);
+randomization.attention = {};
+attentionList = {'attentionOnStimulus','attentionOnFixation'};
 for runNum = 1:numRuns
+    
     % Path
     addpath(fullfile('..','functions'));
     
@@ -29,6 +31,7 @@ for runNum = 1:numRuns
     randomization.stimulus = [randomization.stimulus stimulus(rand_shuffle)+1];
     randomization.phase     = [randomization.phase phase(rand_shuffle)];
     
+    randomization.attention = [randomization.attention repmat(attentionList(mod(mod(subject,2)+runNum,2)+1),1,numTrials)];
     randomization.trial =[randomization.trial 1:numTrials];
     randomization.run =  [randomization.run repmat(runNum,1,numTrials)];
     randomization.subject= [randomization.subject repmat(subject,1,numTrials)];
