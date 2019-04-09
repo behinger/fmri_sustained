@@ -28,7 +28,7 @@ end
 
 cfg.flicker = struct();
 cfg.flicker.stimSize = 12; % Diameter in degrees
-cfg.flicker.refOrient = [45, 135]; % reference stimuli are 45 and 135 degrees
+% cfg.flicker.refOrient = [45, 135]; % reference stimuli are 45 and 135 degrees
 cfg.flicker.spatialFrequency = 1; % cpd
 cfg.flicker.phases = linspace(0,2*pi,13);
 cfg.flicker.phases(end) = []; %delete last one as 0 = 2*pi
@@ -64,6 +64,7 @@ cfg.flicker.targetsDuration = 0.1;% flicker for 100ms
 
 
 cfg.localizer = cfg.flicker;
+cfg.localizer.orientation = [45 135];
 cfg.localizer.numBlocks = 10; % Total number of stimulus blocks (half as many per orientation)
 if cfg.debug
     cfg.localizer.numBlocks=5;

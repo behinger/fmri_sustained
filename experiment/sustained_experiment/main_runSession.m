@@ -9,11 +9,11 @@
 %--------------------------------------------------------------------------
 cfg = struct();
 
-cfg.do_localizer = 0;
+cfg.do_localizer = 1; % 2 runs
 cfg.do_mainTask  = 1;
 cfg.do_retinotopy= 0;
 
-cfg.debug = 0; % Check debugmode
+cfg.debug = 1; % Check debugmode
 
 cfg.computer_environment = 'dummy'; % could be "mri", "dummy", "work_station", "behav"
 cfg.mri_scanner = 'prisma'; % could be "trio", "avanto","prisma", "essen"
@@ -28,7 +28,7 @@ fprintf('Setting up parameters \n')
 if cfg.debug
     input('!!!DEBUGMODE ACTIVATED!!! - continue with enter')
     Screen('Preference', 'SkipSyncTests', 1)
-%      PsychDebugWindowConfiguration;
+     PsychDebugWindowConfiguration;
 end
 
 
@@ -93,7 +93,9 @@ end
 if cfg.do_localizer
     fprintf('Starting with localizer\n')
     Screen('Flip',cfg.win);
-    experiment_localizerOrientation(cfg,randomization.subject(1));
+    for curRun = 1:2
+         experiment_localizerOrientation(cfg,randomization.subject(1),curRun);
+    end
     fprintf('Localizer Done\n')
     waitQKey(cfg)
     
@@ -105,7 +107,7 @@ end
 if cfg.do_mainTask
     fprintf('Starting with main Task')
     
-    for curRun = 1:4 %numRuns % is a sorted list of runs
+    for curRun = numRuns % is a sorted list of runs
         fprintf('Run %i from %i \n',curRun,length(numRuns))
         fprintf('Drawing subject instructions\n')
         

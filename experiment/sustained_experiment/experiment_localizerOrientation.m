@@ -1,4 +1,4 @@
-function experiment_localizerOrientation(cfg,subject)
+function experiment_localizerOrientation(cfg,subject,run)
 % Run localiser to identify voxels with preference for 45 or 135 degree
 % orientations.
 %
@@ -25,8 +25,9 @@ function experiment_localizerOrientation(cfg,subject)
 % Set up queue for recording button presses
 
 %--------------------------------------------------------------------------
-
-outFile = fullfile('.','MRI_data',sprintf('s%i',subject), sprintf('LOCALIZER_MRI_S%d.mat',subject));
+assert(isnumeric(subject))
+assert(isnumeric(run))
+outFile = fullfile('.','MRI_data',sprintf('s%i',subject), sprintf('LOCALIZER_MRI_S%d_B%d.mat',subject,run));
 mkdir(fileparts(outFile))
 Screen('FillRect', cfg.win, cfg.background);
 
@@ -37,7 +38,8 @@ Screen('Flip',cfg.win);
 params = cfg.localizer;
 cfg = setup_stimuli(cfg,params);
 %--------------------------------------------------------------------------
-setup_kbqueue(0,params); % 0 = deviceID
+setup_kbqueue(cfg);
+
 
 %--------------------------------------------------------------------------
 % Preallocate some variables for storing information
@@ -85,7 +87,7 @@ expectedTime = 0; % This will record what the expected event duration should be
 
 % Start recording key presses
 KbQueueStart;
-
+responses = [];
 for blockNum = 1:params.numBlocks
     fprintf('Localizer (%i/%i):',blockNum,params.numBlocks)
     for stimNum = 1:params.stimPerBlock
@@ -198,7 +200,7 @@ save_and_quit;
     function save_and_quit
         
         % Save results
-        save(outFile, 'flickers45Timings', 'flickers135Timings', 'flickersOffTimings', 'hits', 'misses');
+        save(outFile, 'flickers45Timings', 'flickers135Timings', 'flickersOffTimings', 'responses','hits', 'misses');
         try
             jheapcl; % clean the java heap space
         catch
@@ -228,18 +230,45 @@ save_and_quit;
             numFlickers = length(flickersOffTimings{blockInd});
         end
         
-        % Check how many button presses
-        % KbEventGet records the oldest event and stores how many are
-        % remaining, so will determine number of responses as number
-        % remaining plus one (to include the one recorded by calling
-        % EventGet) over two (because both key press and release is
-        % recorded)
-        [press, nremaining] = KbEventGet;
-        if isempty(press)
-            numPresses = 0;
-        else
-            numPresses = round((nremaining + 1)/2);
+        
+        numPresses = 0;
+        while true
             
+            % only if we don't have a keyboard or bitsi input break
+            if ~strcmp(class(cfg.bitsi_buttonbox),'Bitsi_Scanner')
+                if ~KbEventAvail()
+                    break
+                end
+                evt = KbEventGet();
+            else
+                evt = struct();
+                % wait max 0.1s, but we should not reach here anyway if there
+                % are no buttons left
+                [response,timestamp] = cfg.bitsi_buttonbox.getResponse(.1,true);
+                if response == 0
+                    break
+                end
+                evt.Time = timestamp;
+                evt.response = char(response);
+                
+                if lower(evt.response) == evt.response
+                    % lower letters for rising
+                    evt.Pressed = 1;
+                else
+                    % upper letters for falling edge
+                    evt.Pressed = 0;
+                end
+            end
+            if evt.Pressed==1 % don't record key releases
+                evt.trialnumber = trialNum;
+                evt.TimeMinusStart = evt.Time - startTime;
+                evt.trialDistractor_stimulus = trialDistractor_stimulus{trialNum};
+                evt.trialDistractor_dot = trialDistractor_dot{trialNum};
+                evt.subject = randomization.subject(1);
+                evt.run = randomization.run(1);
+                responses = [responses evt];
+            end
+            numPresses = numPresses+1;
         end
         misses_thisTrial = numFlickers - numPresses;
         hits_thisTrial = numFlickers - misses_thisTrial;
@@ -250,11 +279,6 @@ save_and_quit;
         if blockType ~=2
             fprintf(' hits:%i, misses:%i\n',hits,misses)
         end
-        % Flushing the queue doesn't seem to do anything, going to close
-        % and it open a new one for next time. Presumably this is more
-        % efficient than reading each event off the queue one by one in a
-        % loop until it is empty...
-        setup_kbqueue(0,params);
-        KbQueueStart;
+        
     end
 end
