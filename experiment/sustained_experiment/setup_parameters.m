@@ -57,7 +57,7 @@ cfg.flicker.dotSize = 1.5*[0.25 0.06]; % Size of fixation dot in pixels
 
 cfg.flicker.targetsPerTrial = 1.5; % on average we will have 1.5 flicker per Trial
 cfg.flicker.targetsTimeDelta = 2;%s flicker have to be at least distance of 2s
-cfg.flicker.targetsColor = 0.5; % percent
+cfg.flicker.targetsColor = 0.4; % percent
 cfg.flicker.targetsDuration = 0.1;% flicker for 100ms
 
 
@@ -89,8 +89,8 @@ cfg.localizer.phases = [pi, 2*pi]; % Will alternate phase, phases are chosen so 
 
 cfg.localizer.flickerPerTrial = 2; % on average we will have 4 flicker per block
 cfg.localizer.flickerTimeDelta = 1;%s flicker have to be at least distance of 2s
-cfg.localizer.flickerColor = 1; % percent
-cfg.localizer.flickerDuration = 0.25;% flicker for 100ms
+cfg.localizer.flickerColor = 0.4; % percent
+cfg.localizer.flickerDuration = 0.1;% flicker for 100ms
 
 cfg.retinotopy = cfg.flicker();
 cfg.retinotopy.flickerRate = 6; % set flicker rate, in Hz (i.e. 2 textures every xHz)
@@ -120,7 +120,8 @@ if cfg.mriPulse == 1
         cfg.bitsi_scanner   = Bitsi_Scanner('/dev/ttyS0');
         cfg.bitsi_buttonbox = Bitsi_Scanner('/dev/ttyS5');
         fprintf('Bitsi Scanner initialized\n')
-        
+        cfg.bitsi_scanner.clearResponses()
+        cfg.bitsi_buttonbox.clearResponses()
     catch
      
         fprintf('Could not initialize bitsi\n')

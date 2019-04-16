@@ -70,7 +70,7 @@ fprintf('... click \n')
 if cfg.mriPulse == 1
     Screen('DrawText',cfg.win,'Waiting for mri pulse...', 100, 100);
     Screen('Flip',cfg.win);
-    waitForScanTrigger_KB;
+    waitForScanTrigger_KB(cfg);
 end
 
 
@@ -86,7 +86,10 @@ startTime = Screen('Flip',cfg.win); % Store time experiment started
 expectedTime = 0; % This will record what the expected event duration should be
 
 % Start recording key presses
+if ~strcmp(class(cfg.bitsi_buttonbox),'Bitsi_Scanner')
+
 KbQueueStart;
+end
 responses = [];
 for blockNum = 1:params.numBlocks
     fprintf('Localizer (%i/%i):',blockNum,params.numBlocks)
@@ -220,7 +223,7 @@ save_and_quit;
         % For blockType, 1 = stim block and 2 = off block
         
         % Check how many flickers there were
-        if blockType == 1 % Stimulus block
+        if blockType == 1 % Stimulus blocktrialDistractor_stimulus
             if mod(blockInd,2) == 0 % 135 degrees
                 numFlickers = length(flickers135Timings{round(blockInd/2)});
             else % 45 degrees
@@ -262,8 +265,11 @@ save_and_quit;
             if evt.Pressed==1 % don't record key releases
                 evt.trialnumber = blockNum;
                 evt.TimeMinusStart = evt.Time - startTime;
-                evt.trialDistractor_stimulus = trialDistractor_stimulus{blockNum};
-                evt.trialDistractor_dot = trialDistractor_dot{blockNum};
+                
+                evt.trialDistractor_45= flickers45Timings{blockNum};
+                evt.trialDistractor_135 = flickers135Timings{blockNum};
+                evt.trialDistractor_off = flickersOffTimings{blockNum};
+
                 evt.subject = randomization.subject(1);
                 evt.run = randomization.run(1);
                 responses = [responses evt];

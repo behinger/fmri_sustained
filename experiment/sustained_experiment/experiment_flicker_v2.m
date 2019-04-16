@@ -109,9 +109,10 @@ end
 %--------------------------------------------------------------------------
 % MAIN TRIAL LOOP
 
+if ~strcmp(class(cfg.bitsi_buttonbox),'Bitsi_Scanner')
 
 KbQueueStart(); % start trial press queue
-
+end
 %% Begin presenting stimuli
 % Start with fixation cross
 
