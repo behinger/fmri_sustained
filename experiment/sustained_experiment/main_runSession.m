@@ -15,16 +15,21 @@ cfg.do_localizer = 1; % 4 runs
 cfg.do_mainTask  = 1;
 cfg.do_retinotopy= 0;
 
-cfg.debug = 0; % Check debugmode
+cfg.debug = 1; % Check debugmode
 
 cfg.computer_environment = 'dummy'; % could be "mri", "dummy", "work_station", "behav"
 cfg.mri_scanner = 'prisma'; % could be "trio", "avanto","prisma", "essen"
 
 % 3T TR should be 3.2 or 3.8 (WB)
 cfg.CAIPI = 1;
-cfg.numRuns = 1; % Number of runs
-cfg.numTrials = 12 ; % Number of trials in a run
-cfg.numRuns_localizer = 1;
+cfg = setup_parameters(cfg);
+
+
+cfg.flicker.numRuns = 1; % Number of runs
+cfg.flicker.numTrials = 6 ; % Number of trials in a run
+cfg.localizer.numRuns = 1;
+cfg.localizer.numBlocks = 6; % Total number of stimulus blocks (half as many per orientation)
+
 cfg.writtenCommunication = 0;
 
 fprintf('Setting up parameters \n')
@@ -32,11 +37,10 @@ fprintf('Setting up parameters \n')
 if cfg.debug
     input('!!!DEBUGMODE ACTIVATED!!! - continue with enter')
     Screen('Preference', 'SkipSyncTests', 1)
-%      PsychDebugWindowConfiguration;
+         PsychDebugWindowConfiguration;
 end
 
 
-cfg = setup_parameters(cfg);
 
 
 
@@ -44,7 +48,7 @@ cfg = setup_parameters(cfg);
 if cfg.debug
     SID = '98';
 else
-SID = input('Enter subject ID:','s');
+    SID = input('Enter subject ID:','s');
 end
 assert(isnumeric(str2num(SID)))
 
@@ -58,7 +62,7 @@ try
     
 catch
     fprintf('Generating Randomization\n')
-    setup_randomization_generate(str2num(SID),cfg.numRuns,cfg.numTrials)
+    setup_randomization_generate(str2num(SID),cfg.flicker.numRuns,cfg.flicker.numTrials)
     tmp = load(sprintf('randomizations/subject%s_variables.mat',SID));
     
 end
@@ -76,20 +80,6 @@ fprintf('Starting Screen\n')
 cfg = setup_window(cfg,whichScreen);
 % Run through attention runs
 numRuns = sort(unique(randomization.run));
-if cfg.debug
-    
-    %limit to 8 trials in debugmode
-    ix = randomization.trial <=8;
-    for fn = fieldnames(randomization)'
-        randomization.(fn{1}) = randomization.(fn{1})(ix);
-    end
-    numRuns = 2; % also limit to 2 runs.
-    % => 3.5* 4 * 8 * 2 = 4min total testing time for main experiment
-    cfg.flicker.scannerWaitTime = 1;
-    cfg.flicker.ITI = 5;
-
-end
-
 
 %% Do orientation localizer
 
@@ -97,8 +87,8 @@ toc
 if cfg.do_localizer
     fprintf('Starting with localizer\n')
     Screen('Flip',cfg.win);
-    for curRun = 1:cfg.numRuns_localizer
-         experiment_localizerOrientation(cfg,randomization.subject(1),curRun);
+    for curRun = 1:cfg.localizer.numRuns
+        experiment_localizerOrientation(cfg,randomization.subject(1),curRun);
     end
     fprintf('Localizer Done\n')
     waitQKey(cfg)

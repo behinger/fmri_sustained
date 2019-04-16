@@ -64,10 +64,7 @@ cfg.flicker.targetsDuration = 0.1;% flicker for 100ms
 
 cfg.localizer = cfg.flicker;
 cfg.localizer.orientation = [45 135];
-cfg.localizer.numBlocks = 12; % Total number of stimulus blocks (half as many per orientation)
-if cfg.debug
-    cfg.localizer.numBlocks=5;
-end
+
 if cfg.CAIPI
     cfg.localizer.stimBlockLength = cfg.TR * 6; % Stimulus block length in seconds
     cfg.localizer.offBlockLength = cfg.TR * 6; % Off block length in seconds

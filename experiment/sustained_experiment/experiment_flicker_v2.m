@@ -12,6 +12,10 @@ outFile = fullfile('.','MRI_data',sprintf('s%i',subjectid), sprintf('ADAPT_MRI_S
 if ~exist(fileparts(outFile),'dir')
     mkdir(fileparts(outFile))
 end
+fLog = fopen([outFile(1:end-3),'txt'],'w');
+if fLog == -1
+    error('could not open logfile')
+end
 Screen('FillRect', cfg.win, cfg.background);
 
 %--------------------------------------------------------------------------
@@ -52,9 +56,9 @@ end
 clicks = 0;
 Screen('FillRect',cfg.win,cfg.background);
 if strcmp(randomization.attention{1},'AttentionOnFixation')
-    fprintf('Fixation Dot Flicker Block \n')
+    fprintf(fLog,'Fixation Dot Flicker Block \n');
 else
-    fprintf('Stimulus Dot Flicker Block \n')
+    fprintf(fLog,'Stimulus Dot Flicker Block \n');
 end
 fprintf('Showing Instructions: waiting for mouse click (waiting for ScanTrigger after this)')
 
@@ -120,9 +124,8 @@ draw_fixationdot(cfg,params.dotSize)
 startTime = Screen('Flip',cfg.win); % Store time experiment started
 expectedTime = 0; % This will record what the expected event duration should be
 firstTrial = true; % Flag to show we are on first trial
-
+tic
 for trialNum = 1:ntrial
-    fprintf('Adaptation Trial %i from %i | ',trialNum,ntrial)
     
     % Draw first reference stimulus after ITI
     if firstTrial
@@ -131,44 +134,36 @@ for trialNum = 1:ntrial
 
     end
     
-    singleStimDuration = (1/randomization.condition(trialNum))/2; %divided by two because half of it will be stimulus, half mask
+    singleStimDuration = (1/randomization.condition(trialNum))/2; %divided by two because half of it will be stimulus, half mas
+    fprintf(fLog,'Adaptation Trial %i from %i | stimtiming: %f \n',trialNum,ntrial,singleStimDuration);
+
     catchDuration = 1;%s
     warning('BalanceStimulation Time!!')
     
     %% FIRST STIMULUS
     expectedTime_start = expectedTime;
     expectedtimings(1,trialNum) = expectedTime;
+    fprintf(fLog,'expectedTime(TR):%.5f \t toc: %.5f\n',expectedTime/cfg.TR,(GetSecs-startTime)/cfg.TR);
+
     firstStim = 0;
     distractorTiming_stimulus = trialDistractor_stimulus{trialNum}+expectedTime;
     distractorTiming_dot = trialDistractor_dot{trialNum}+expectedTime;
-%     display(distractorTiming_dot)
     phase_ix = randomization.phase(trialNum); % just so every trial starts with a different phase, could be random as well
-    lastchange = 0;
-    
-    %take 10ms to draw everything, i.e. we will change the fixation dot only previous to stimonset if
-    % disctractorTiming_dot < expectedTime-drawingtime
     drawingtime = 2*cfg.halfifi;
     draw_fixationdot(cfg,params.dotSize)
-    stimOnset = 0;
-    stimOffset = 0;
+
     while true
         
         catchtype = 'spatialFreq'; % could be 'rotation' as well
-%         if (abs(stimOffset-stimOnset)-singleStimDuration)>cfg.halfifi
-%             fprintf('----------------\n stim: %i\t %f/%f \n',trialNum,expectedTime,expectedTime+singleStimDuration)
-%             fprintf('Mask-Duration: %f \n',stimOffset-stimOnset)
-%         end
         % Define Rotation decrement (thisis also indicator of catch trial)
         if any(distractorTiming_stimulus>(expectedTime) & distractorTiming_stimulus<(expectedTime+catchDuration))
             rotationDecrement = (randi([0,1],1)*2-1) * 45/4;
-            %             warning('stimulus-catch-trial! \n')
         else
             rotationDecrement = 0;
         end
         
         
         
-        %         if expectedTime - lastchange >= 2
         % Choose a new phase that is at least 3 different from the old
         % phase in order to make large jumps more prominent
         new_phase = randi(length(cfg.stimTex)-3,1)+3;
@@ -178,34 +173,29 @@ for trialNum = 1:ntrial
         % we could have a phase_ix higher than the length of stimuli,
         % wrap around, add+1 because mod(12,12) = 0;
         phase_ix = mod(phase_ix,length(cfg.stimTex))+1;
-        lastchange = expectedTime;
-        %         fprintf('changed phase\n')
+
         
         % if, while showing the mask, we shold have the onset of a white
         % dot, draw it & flip it
-        
-        
-        
         if strcmp(catchtype,'spatialFreq') && rotationDecrement ~=0
             Screen('DrawTexture',cfg.win,cfg.stimTexCatch(phase_ix),[],[],params.refOrient(randomization.stimulus(trialNum)));
         else
             % Always 0 or in rotation condition
             Screen('DrawTexture',cfg.win,cfg.stimTex(phase_ix),[],[],rotationDecrement+params.refOrient(randomization.stimulus(trialNum)));
         end
-        
-        
-        %         draw_fixationdot(cfg,params.dotSize)
-        % if we should keep the white dot
-        
-        
+         
         draw_fixationdot_task(cfg,params.dotSize,params.targetsColor*cfg.Lmax_rgb,distractorTiming_dot,startTime,expectedTime,drawingtime,1)
+        fprintf(fLog,'beforeOnset(TR):%.5f \t toc: %.5f\n',(expectedTime-cfg.halfifi)/cfg.TR,(GetSecs-startTime)/cfg.TR);
+
         stimOnset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi,1)-startTime;
-        
+        fprintf(fLog,'onsetSTIM(TR):%.5f \t toc: %.5f\n',stimOnset/cfg.TR,(GetSecs-startTime)/cfg.TR);
         % how long should the stimulus be on?
         expectedTime = expectedTime + singleStimDuration;
+        fprintf(fLog,'expectedTimeSTIM(TR):%.5f \t toc: %.5f\n',expectedTime/cfg.TR,(GetSecs-startTime)/cfg.TR);
+
         draw_fixationdot_task(cfg,params.dotSize,params.targetsColor*cfg.Lmax_rgb,distractorTiming_dot,startTime,expectedTime,drawingtime)
         %% Mask
-        %         fprintf('mask: %i\t %f/%f \n',trialNum,expectedTime,expectedTime+singleStimDuration)
+        %         fprintf(fLog,'mask: %i\t %f/%f \n',trialNum,expectedTime,expectedTime+singleStimDuration)
         % Catch Trial on Mask
         if any(distractorTiming_stimulus>(expectedTime) & distractorTiming_stimulus<(expectedTime+catchDuration))
             rotationDecrement = (randi([0,1],1)*2-1) * 45/4;
@@ -215,17 +205,19 @@ for trialNum = 1:ntrial
         end
      
         if strcmp(catchtype,'spatialFreq') && rotationDecrement ~=0
-            Screen('DrawTexture',cfg.win,cfg.stimTexMaskCatch(phase_ix),[],[],params.refOrient(randomization.stimulus(trialNum)));
+             Screen('DrawTexture',cfg.win,cfg.stimTexMaskCatch(phase_ix),[],[],params.refOrient(randomization.stimulus(trialNum)));
         else
-            Screen('DrawTexture',cfg.win,cfg.stimTexMask(phase_ix),[],[],rotationDecrement+params.refOrient(randomization.stimulus(trialNum)));
+             Screen('DrawTexture',cfg.win,cfg.stimTexMask(phase_ix),[],[],rotationDecrement+params.refOrient(randomization.stimulus(trialNum)));
         end
         
+
         %         Screen('DrawingFinished', cfg.win);
         
         draw_fixationdot_task(cfg,params.dotSize,params.targetsColor*cfg.Lmax_rgb,distractorTiming_dot,startTime,expectedTime,drawingtime,1)
         stimOffset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi,1)-startTime;
+        fprintf(fLog,'onsetMASK(TR):%.5f \t toc: %.5f\n',stimOffset/cfg.TR,(GetSecs-startTime)/cfg.TR);
 %         if (abs(stimOffset-stimOnset)-singleStimDuration)>cfg.halfifi
-%             fprintf('Stim-Duration: %f \n',stimOffset-stimOnset);
+%             fprintf(fLog,'Stim-Duration: %f \n',stimOffset-stimOnset);
 %         end
         % save for some kind of stimulus timing check
         if firstStim
@@ -237,9 +229,13 @@ for trialNum = 1:ntrial
         
         %how long should mask be one?
         expectedTime = expectedTime + singleStimDuration;
+        fprintf(fLog,'expectedTimeMASK(TR):%.5f \t toc: %.5f\n',expectedTime/cfg.TR,(GetSecs-startTime)/cfg.TR);
+
         draw_fixationdot_task(cfg,params.dotSize,params.targetsColor*cfg.Lmax_rgb,distractorTiming_dot,startTime,expectedTime,drawingtime)
         % Exit if time is over
         if (expectedTime - expectedTime_start) > params.trialLength
+            fprintf(fLog,'breakDetected(TR) toc: %.5f\n',(GetSecs-startTime)/cfg.TR);
+
             break
         end
         
@@ -249,11 +245,15 @@ for trialNum = 1:ntrial
     Screen('FillRect',cfg.win,cfg.background)
     draw_fixationdot(cfg,params.dotSize)
     
-    Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi)-startTime;
+    onset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi)-startTime;
+    fprintf(fLog,'lastTrialFlip(TR):%.5f \t toc: %.5f\n',onset/cfg.TR,(GetSecs-startTime)/cfg.TR);
+
     
-    
-    expectedTime = expectedTime + params.ITI;
-    
+    % overwrite expected Time to catch up with minor fluctiations in
+    % expected Time
+    expectedTime = expectedTime_start+params.trialLength + params.ITI;
+    fprintf(fLog,'expectedTime ITI(TR):%.5f \t toc: %.5f\n',expectedTime/cfg.TR,(GetSecs-startTime)/cfg.TR);
+
     % Read out all the button presses
     while true
         
@@ -303,12 +303,10 @@ for trialNum = 1:ntrial
         save_and_quit;
         return
     end
-    
+    fprintf(fLog,'button readout over : toc: %.5f\n',(GetSecs-startTime)/cfg.TR);
+
     
 end  % END OF TRIAL LOOP
-
-% Make sure wait till end of last ITI before stopping
-expectedTime = expectedTime + params.ITI;
 
 endTime = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi);
 
