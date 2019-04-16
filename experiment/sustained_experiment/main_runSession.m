@@ -15,7 +15,7 @@ cfg.do_localizer = 1; % 4 runs
 cfg.do_mainTask  = 1;
 cfg.do_retinotopy= 0;
 
-cfg.debug = 1; % Check debugmode
+cfg.debug = 0; % Check debugmode
 
 cfg.computer_environment = 'dummy'; % could be "mri", "dummy", "work_station", "behav"
 cfg.mri_scanner = 'prisma'; % could be "trio", "avanto","prisma", "essen"
@@ -25,10 +25,11 @@ cfg.CAIPI = 1;
 cfg = setup_parameters(cfg);
 
 
-cfg.flicker.numRuns = 1; % Number of runs
-cfg.flicker.numTrials = 6 ; % Number of trials in a run
-cfg.localizer.numRuns = 1;
-cfg.localizer.numBlocks = 6; % Total number of stimulus blocks (half as many per orientation)
+cfg.flicker.numRuns = 5; % Number of runs
+cfg.flicker.numTrials = 12 ; % Number of trials in a run
+cfg.localizer.numRuns = 2;
+% blocks == trials
+cfg.localizer.numBlocks = 12; % Total number of stimulus blocks (half as many per orientation)
 
 cfg.writtenCommunication = 0;
 
