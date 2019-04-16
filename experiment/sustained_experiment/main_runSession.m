@@ -4,8 +4,9 @@
 
 % XXX: XXX
 % retinotop: 11 x TR x 6 cycles = 230 = 4 min (too short?)
-
-% Location/Task: (2phases*6TR + 4WaitTR) * 12 trials = 192 volumes => ~7min with TR=2.3
+% Localizer: (2phases*6TR + 4waitTR) * 12 trials = 192 volumes = 6.16min
+% with TR2.3
+% Task: (2phases*6TR + 4WaitTR) * 12 trials = 192 volumes => ~6.16min with TR=2.3
 %--------------------------------------------------------------------------
 tic;
 cfg = struct();
@@ -145,5 +146,5 @@ if cfg.do_retinotopy
 end
 % -----------------------------------------------------------------
 % call function to close window and clean up
-toc(t)
+toc
 safeQuit(cfg);

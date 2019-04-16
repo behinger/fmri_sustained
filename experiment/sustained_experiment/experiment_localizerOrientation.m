@@ -270,8 +270,8 @@ save_and_quit;
                 evt.trialDistractor_135 = flickers135Timings{blockNum};
                 evt.trialDistractor_off = flickersOffTimings{blockNum};
 
-                evt.subject = randomization.subject(1);
-                evt.run = randomization.run(1);
+                evt.subject = subject(1);
+                evt.run = run(1);
                 responses = [responses evt];
             end
             numPresses = numPresses+1;
