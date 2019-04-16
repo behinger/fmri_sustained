@@ -19,16 +19,15 @@ end
 cfg.keys = [KbName('y') KbName('r') KbName('b') KbName('g') 49, 50, 51, 52]; %copied from essen_localiser_v4
 
 if cfg.CAIPI
-    cfg.TR = 3.504; % old CAIPI
     cfg.TR = 2.336; % fast CAIPI
-    %     fprintf('XXXXXXXXXXXXXXXXXXXXXXXX setup_parameters.m Change TR to correct value XXXXXXXXXXXXXXXXXXX\n')
+    fprintf('XXXXXXXXXXXXXXXXXXXXXXXX setup_parameters.m Change TR to correct value XXXXXXXXXXXXXXXXXXX\n')
 else
     cfg.TR = 3.408; % TR will determine stimulus timings
 end
 
 cfg.flicker = struct();
 cfg.flicker.stimSize = 12; % Diameter in degrees
-% cfg.flicker.refOrient = [45, 135]; % reference stimuli are 45 and 135 degrees
+cfg.flicker.refOrient = [45, 135]; % orientations for stimuli are 45 and 135 degrees
 cfg.flicker.spatialFrequency = 1; % cpd
 cfg.flicker.phases = linspace(0,2*pi,13);
 cfg.flicker.phases(end) = []; %delete last one as 0 = 2*pi
@@ -65,7 +64,7 @@ cfg.flicker.targetsDuration = 0.1;% flicker for 100ms
 
 cfg.localizer = cfg.flicker;
 cfg.localizer.orientation = [45 135];
-cfg.localizer.numBlocks = 10; % Total number of stimulus blocks (half as many per orientation)
+cfg.localizer.numBlocks = 12; % Total number of stimulus blocks (half as many per orientation)
 if cfg.debug
     cfg.localizer.numBlocks=5;
 end

@@ -11,7 +11,10 @@ try
 catch
     disp('Could not clean java heap space');
 end
-cfg.bitsi_buttonbox.close
-cfg.bitsi_scanner.close
+try
+    cfg.bitsi_buttonbox.close
+    cfg.bitsi_scanner.close
+catch
+end
 disp('Quit safely');
 end

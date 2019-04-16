@@ -51,7 +51,7 @@ hits = 0;
 clicks = 0;
 Screen('FillRect',cfg.win,cfg.background);
 fprintf('Drawing Instructions \n')
-instructions = 'Look towards the dot in the centre of the screen at all times\n\nPress the button with your index finger when this dot flashes\n\nRun length: 10 minutes';
+instructions = 'Look towards the dot in the centre of the screen at all times\n\nPress the button with your index finger when this dot flashes\n\nRun length: 5 minutes';
 Screen('DrawText',cfg.win,'Waiting for mouse click...', 100, 100);
 DrawFormattedText(cfg.win, instructions, 'center', 'center');
 Screen('Flip',cfg.win);
@@ -260,10 +260,10 @@ save_and_quit;
                 end
             end
             if evt.Pressed==1 % don't record key releases
-                evt.trialnumber = trialNum;
+                evt.trialnumber = blockNum;
                 evt.TimeMinusStart = evt.Time - startTime;
-                evt.trialDistractor_stimulus = trialDistractor_stimulus{trialNum};
-                evt.trialDistractor_dot = trialDistractor_dot{trialNum};
+                evt.trialDistractor_stimulus = trialDistractor_stimulus{blockNum};
+                evt.trialDistractor_dot = trialDistractor_dot{blockNum};
                 evt.subject = randomization.subject(1);
                 evt.run = randomization.run(1);
                 responses = [responses evt];

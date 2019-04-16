@@ -1,7 +1,9 @@
 function experiment_flicker_v2(cfg,randomization)
 %--------------------------------------------------------------------------
+if strcmp(class(cfg.bitsi_buttonbox),'Bitsi_Scanner')
 cfg.bitsi_buttonbox.clearResponses;
 cfg.bitsi_scanner.clearResponses;
+end
 cfg.numSavedResponses = 0;
 subjectid = randomization.subject(1);
 runid = randomization.run(1);
@@ -125,9 +127,7 @@ for trialNum = 1:ntrial
     if firstTrial
         expectedTime = expectedTime + params.scannerWaitTime;
         firstTrial = false;
-    else
-        warning('DEBUG SPEEDUP')
-        expectedTime = expectedTime;% + params.ITI;
+
     end
     
     singleStimDuration = (1/randomization.condition(trialNum))/2; %divided by two because half of it will be stimulus, half mask
@@ -153,10 +153,10 @@ for trialNum = 1:ntrial
     while true
         
         catchtype = 'spatialFreq'; % could be 'rotation' as well
-        if (abs(stimOffset-stimOnset)-singleStimDuration)>cfg.halfifi
-            fprintf('----------------\n stim: %i\t %f/%f \n',trialNum,expectedTime,expectedTime+singleStimDuration)
-            fprintf('Mask-Duration: %f \n',stimOffset-stimOnset)
-        end
+%         if (abs(stimOffset-stimOnset)-singleStimDuration)>cfg.halfifi
+%             fprintf('----------------\n stim: %i\t %f/%f \n',trialNum,expectedTime,expectedTime+singleStimDuration)
+%             fprintf('Mask-Duration: %f \n',stimOffset-stimOnset)
+%         end
         % Define Rotation decrement (thisis also indicator of catch trial)
         if any(distractorTiming_stimulus>(expectedTime) & distractorTiming_stimulus<(expectedTime+catchDuration))
             rotationDecrement = (randi([0,1],1)*2-1) * 45/4;
@@ -223,9 +223,9 @@ for trialNum = 1:ntrial
         
         draw_fixationdot_task(cfg,params.dotSize,params.targetsColor*cfg.Lmax_rgb,distractorTiming_dot,startTime,expectedTime,drawingtime,1)
         stimOffset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi,1)-startTime;
-        if (abs(stimOffset-stimOnset)-singleStimDuration)>cfg.halfifi
-            fprintf('Stim-Duration: %f \n',stimOffset-stimOnset);
-        end
+%         if (abs(stimOffset-stimOnset)-singleStimDuration)>cfg.halfifi
+%             fprintf('Stim-Duration: %f \n',stimOffset-stimOnset);
+%         end
         % save for some kind of stimulus timing check
         if firstStim
             stimtimings(1,trialNum) = stimOnset;
