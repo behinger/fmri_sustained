@@ -22,7 +22,8 @@ if cfg.CAIPI
     cfg.TR = 2.336; % fast CAIPI
     fprintf('XXXXXXXXXXXXXXXXXXXXXXXX setup_parameters.m Change TR to correct value XXXXXXXXXXXXXXXXXXX\n')
 else
-    cfg.TR = 3.408; % TR will determine stimulus timings
+    cfg.TR = 3.408;
+    cfg.TR = 3.2;% TR will determine stimulus timings
 end
 
 cfg.flicker = struct();

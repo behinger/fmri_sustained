@@ -17,11 +17,11 @@ cfg.do_retinotopy= 0;
 
 cfg.debug = 0; % Check debugmode
 
-cfg.computer_environment = 'dummy'; % could be "mri", "dummy", "work_station", "behav"
+cfg.computer_environment = 'mri'; % could be "mri", "dummy", "work_station", "behav"
 cfg.mri_scanner = 'prisma'; % could be "trio", "avanto","prisma", "essen"
 
 % 3T TR should be 3.2 or 3.8 (WB)
-cfg.CAIPI = 1;
+cfg.CAIPI = 0;
 cfg = setup_parameters(cfg);
 
 
