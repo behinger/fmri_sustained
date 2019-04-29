@@ -11,7 +11,7 @@
 tic;
 cfg = struct();
 
-cfg.do_localizer = 1; % 4 runs
+cfg.do_localizer = 0; % 4 runs
 cfg.do_mainTask  = 1;
 cfg.do_retinotopy= 0;
 
@@ -103,7 +103,7 @@ end
 if cfg.do_mainTask
     fprintf('Starting with main Task')
     
-    for curRun = numRuns % is a sorted list of runs
+    for curRun = numRuns(2:end) % is a sorted list of runs
         fprintf('Run %i from %i \n',curRun,length(numRuns))
         fprintf('Drawing subject instructions\n')
         
