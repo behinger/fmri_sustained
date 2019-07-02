@@ -11,7 +11,7 @@
 tic;
 cfg = struct();
 
-cfg.do_localizer = 0; % 4 runs
+cfg.do_localizer = 1; % 
 cfg.do_mainTask  = 1;
 cfg.do_retinotopy= 0;
 
@@ -30,7 +30,7 @@ cfg.TR = 1.500; % 213 image volumes to be recorded
 cfg = setup_parameters(cfg);
 
 
-cfg.flicker.numRuns = 5; % Number of runs
+cfg.flicker.numRuns = 6; % Number of runs
 cfg.flicker.numTrials = 12 ; % Number of trials in a run
 cfg.localizer.numRuns = 2;
 % blocks == trials
@@ -93,7 +93,7 @@ toc
 if cfg.do_localizer
     fprintf('Starting with localizer\n')
     Screen('Flip',cfg.win);
-    for curRun = 1:cfg.localizer.numRuns
+	    for curRun = 1:cfg.localizer.numRuns
         experiment_localizerOrientation(cfg,randomization.subject(1),curRun);
         if cfg.writtenCommunication
             communicateWithSubject(cfg.win,'',200,200,cfg.Lmin_rgb,cfg.background);
