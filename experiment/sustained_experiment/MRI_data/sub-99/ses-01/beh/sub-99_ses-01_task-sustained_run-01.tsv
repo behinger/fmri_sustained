@@ -1092,7 +1092,7 @@ onset	onsetTR	message	subject	run	block	attention	condition	phase	stimulus	4.499
 285.248	190.166	maskOnset	099	1	9	attentionOnStimulus	2	5.236	2
 285.250	190.166	breakOnset	099	1	9	attentionOnStimulus	2	5.236	2
 285.498	190.332	blockEnd	099	1	9	attentionOnStimulus	2	5.236	2
-301.494	200.996	stimOnset	099	1	10	attentionOnStimulus	2	2.094	2
+301.494	200.996	stimOnset	099	1	blockEnd10	attentionOnStimulus	2	2.094	2
 301.744	201.162	maskOnset	099	1	10	attentionOnStimulus	2	2.094	2
 301.994	201.329	stimOnset	099	1	10	attentionOnStimulus	2	2.094	2
 302.244	201.496	maskOnset	099	1	10	attentionOnStimulus	2	2.094	2
