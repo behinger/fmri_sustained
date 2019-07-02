@@ -40,7 +40,7 @@ cfg.flicker.scannerWaitTime = cfg.TR * 3; % Time to wait after scan pulse - must
 % cfg.flicker.stimdur.interrupt_fast = [0.1,0.1]; % stim vs. mask
 
 
-cfg.flicker.ITI = cfg.flicker.trialLength;%2*cfg.TR;
+cfg.flicker.ITI = round(12/cfg.TR)*cfg.TR;%2*cfg.TR;
 
 cfg.flicker.dotSize = 1.5*[0.25 0.06]; % Size of fixation dot in pixels
 % cfg.flicker.increment = 0.25; % Increment to increase thresholds by
@@ -57,7 +57,7 @@ cfg.localizer.orientation = [45 135];
 
 
 cfg.localizer.stimBlockLength = round(16/cfg.TR)*cfg.TR; %
-cfg.localizer.offBlockLength = round(16/cfg.TR)*cfg.TR; %
+cfg.localizer.offBlockLength = round(12/cfg.TR)*cfg.TR; %
 
 cfg.localizer.scannerWaitTime = cfg.TR * 4; % Time to wait after scan pulse - must be multiple of TR
     

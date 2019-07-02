@@ -242,7 +242,6 @@ for trialNum = 1:ntrial
         draw_fixationdot_task(cfg,params.dotSize,params.targetsColor*cfg.Lmax_rgb,distractorTiming_dot,startTime,expectedTime,drawingtime)
         % Exit if time is over
         if (expectedTime - expectedTime_start) > params.trialLength
-            add_log_entry('breakOnset',GetSecs-startTime);
             
             break
         end
@@ -254,7 +253,7 @@ for trialNum = 1:ntrial
     draw_fixationdot(cfg,params.dotSize)
     
     onset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi)-startTime;
-    add_log_entry('blockEnd',onset);
+    add_log_entry('breakOnset',onset);
     
     
     % overwrite expected Time to catch up with minor fluctiations in
