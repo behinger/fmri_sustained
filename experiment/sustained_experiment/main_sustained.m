@@ -12,7 +12,7 @@ tic;
 cfg = struct();
 
 cfg.do_localizer = 1; % 4 runs
-cfg.do_mainTask  = 0;
+cfg.do_mainTask  = 1;
 cfg.do_retinotopy= 0;
 
 cfg.debug = 1; % Check debugmode
@@ -34,7 +34,7 @@ cfg.flicker.numRuns = 5; % Number of runs
 cfg.flicker.numTrials = 12 ; % Number of trials in a run
 cfg.localizer.numRuns = 2;
 % blocks == trials
-cfg.localizer.numBlocks = 12; % Total number of stimulus blocks (half as many per orientation)
+cfg.localizer.numBlocks = 10; % Total number of stimulus blocks (half as many per orientation)
 
 cfg.writtenCommunication = 0;
 
