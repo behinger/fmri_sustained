@@ -17,7 +17,7 @@ cfg.do_retinotopy= 0;
 
 cfg.debug = 0; % Check debugmode
 
-cfg.computer_environment = 'dummy'; % could be "mri", "dummy", "work_station", "behav"
+cfg.computer_environment = 'mri'; % could be "mri", "dummy", "work_station", "behav"
 cfg.mri_scanner = 'prisma'; % could be "trio", "avanto","prisma", "essen"
 
 cfg.TR = 2.336; % CAIPI sequence Essen
