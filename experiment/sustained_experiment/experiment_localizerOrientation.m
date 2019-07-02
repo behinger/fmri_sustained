@@ -38,7 +38,7 @@ if fLog == -1
     error('could not open logfile')
 end
 %print Header
-fprintf(fLog,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','onset','onsetTR','message','subjectid','run','block','trial','contrast','condition','phase','stimulus');
+fprintf(fLog,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','onset','onsetTR','message','subjectid','run','block','orientation','phase');
 Screen('FillRect', cfg.win, cfg.background);
 
 %--------------------------------------------------------------------------
@@ -103,6 +103,7 @@ end
 responses = [];
 for blockNum = 1:params.numBlocks
     fprintf('Localizer (%i/%i):',blockNum,params.numBlocks)
+
     for stimNum = 1:params.stimPerBlock
         % Check for button presses in previous off block
         % (if on first stim of not the first block)
@@ -137,6 +138,9 @@ for blockNum = 1:params.numBlocks
         draw_fixationdot(cfg,params.dotSize)
         Screen('DrawingFinished', cfg.win);
         onset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi)-startTime;
+        if stimNum == 1; % for log entry
+        add_log_entry('RestOffset',onset)
+        end
         add_log_entry('stimOnset',onset)
         
         
@@ -175,7 +179,8 @@ for blockNum = 1:params.numBlocks
             return
         end
     end
-    
+    add_log_entry('RestOnset',GetSecs-startTime)
+
     % During off blocks, flicker fixation when we are supposed to
     for fl = 1:length(flickersOffTimings{blockNum})
         if fl == 1
@@ -280,6 +285,8 @@ save_and_quit;
                 end
             end
             if evt.Pressed==1 % don't record key releases
+                add_log_entry('ButtonPress',evt.Time-startTime)
+
                 evt.trialnumber = blockNum;
                 evt.TimeMinusStart = evt.Time - startTime;
                 

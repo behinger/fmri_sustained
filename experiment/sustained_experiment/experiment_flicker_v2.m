@@ -291,6 +291,8 @@ for trialNum = 1:ntrial
             end
         end
         if evt.Pressed==1 % don't record key releases
+            add_log_entry('buttonpress',evt.Time-startTime);
+
             evt.trialnumber = trialNum;
             evt.TimeMinusStart = evt.Time - startTime;
             evt.trialDistractor_stimulus = trialDistractor_stimulus{trialNum};
@@ -420,7 +422,7 @@ save_and_quit;
             
             draw_fixationdot(cfg,dotSize,0,targetsColor)
             when = Screen('Flip', cfg.win, startTime+distractorTiming_dot(1) - cfg.halfifi,1);
-            add_log_entry('fixCatch',when)
+            add_log_entry('fixCatch',when-startTime)
 
             %fprintf('I StimOnFlip %f\n',when-startTime)
             draw_fixationdot(cfg,dotSize,0,0)
@@ -441,7 +443,7 @@ save_and_quit;
             if ~noflip && (distractorTiming_dot(1)+drawingtime)< expectedTime
                 
                 when = Screen('Flip', cfg.win, startTime+distractorTiming_dot(1) - cfg.halfifi,1);
-                add_log_entry('fixCatch',when)
+                add_log_entry('fixCatch',when-startTime)
                 %fprintf('II StimOnFlip %f \n',when-startTime)
                 
                 %         draw_fixationdot(cfg,dotSize,0,0)

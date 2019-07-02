@@ -11,13 +11,13 @@
 tic;
 cfg = struct();
 
-cfg.do_localizer = 1; % 4 runs
+cfg.do_localizer = 0; % 4 runs
 cfg.do_mainTask  = 1;
 cfg.do_retinotopy= 0;
 
-cfg.debug = 1; % Check debugmode
+cfg.debug = 0; % Check debugmode
 
-cfg.computer_environment = 't480s'; % could be "mri", "dummy", "work_station", "behav"
+cfg.computer_environment = 'dummy'; % could be "mri", "dummy", "work_station", "behav"
 cfg.mri_scanner = 'prisma'; % could be "trio", "avanto","prisma", "essen"
 
 cfg.TR = 2.336; % CAIPI sequence Essen
@@ -36,7 +36,7 @@ cfg.localizer.numRuns = 2;
 % blocks == trials
 cfg.localizer.numBlocks = 10; % Total number of stimulus blocks (half as many per orientation)
 
-cfg.writtenCommunication = 0;
+cfg.writtenCommunication = 1;
 
 fprintf('Setting up parameters \n')
 
@@ -95,6 +95,9 @@ if cfg.do_localizer
     Screen('Flip',cfg.win);
     for curRun = 1:cfg.localizer.numRuns
         experiment_localizerOrientation(cfg,randomization.subject(1),curRun);
+        if cfg.writtenCommunication
+            communicateWithSubject(cfg.win,'',200,200,cfg.Lmin_rgb,cfg.background);
+        end
     end
     fprintf('Localizer Done\n')
     waitQKey(cfg)
@@ -117,7 +120,7 @@ if cfg.do_mainTask
         fprintf('Starting experiment_adaptation\n')
         experiment_flicker_v2(cfg,slice_randomization(randomization,str2num(SID),curRun));
         
-        if curRun < numRuns
+        if curRun < max(numRuns)
             text = ['Moving on to run ', num2str(curRun+1), ' of ', num2str(numRuns), '...'];
             DrawFormattedText(cfg.win, text, 'center', 'center');
             Screen('Flip',cfg.win);
