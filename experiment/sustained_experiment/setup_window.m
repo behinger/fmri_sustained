@@ -3,12 +3,17 @@ function cfg = setup_window(cfg,whichScreen)
 
 % from the laptop we often have troubles to start the screen, so I will try
 % it immediately 10 times before exiting
+
+if cfg.debug
+        [cfg.win, cfg.rect] = Screen('OpenWindow',whichScreen,[],[200 200 1200 1200]);
+else
 for k = 1:10
     try
         [cfg.win, cfg.rect] = Screen('OpenWindow',whichScreen);
         break
     catch
     end
+end
 end
 
 cfg.width = cfg.rect(3);

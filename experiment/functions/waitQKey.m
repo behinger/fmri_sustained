@@ -15,7 +15,7 @@ for waitTime = 1:5
     key = find(key);
     if keyPr == 1 && strcmp(KbName(key(1)), 'q')
         inp = input('Are you sure you want to quit the MAIN experiment (y/n)','s');
-        if strcmp(inp,y)
+        if strcmp(inp,'y')
             safeQuit(cfg);
             return
         end

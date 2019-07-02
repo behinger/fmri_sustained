@@ -1,4 +1,4 @@
-function experiment_localizerOrientation(cfg,subject,run)
+function experiment_localizerOrientation(cfg,subjectid,run)
 % Run localiser to identify voxels with preference for 45 or 135 degree
 % orientations.
 %
@@ -25,10 +25,20 @@ function experiment_localizerOrientation(cfg,subject,run)
 % Set up queue for recording button presses
 
 %--------------------------------------------------------------------------
-assert(isnumeric(subject))
+assert(isnumeric(subjectid))
 assert(isnumeric(run))
-outFile = fullfile('.','MRI_data',sprintf('s%i',subject), sprintf('LOCALIZER_MRI_S%d_B%d.mat',subject,run));
-mkdir(fileparts(outFile))
+
+outFile = fullfile('.','MRI_data',sprintf('sub-%02i',subjectid),'ses-01','beh', sprintf('sub-%02i_ses-01_task-localizer_run-%02i.mat',subjectid,run));
+if ~exist(fileparts(outFile),'dir')
+    mkdir(fileparts(outFile))
+end
+
+fLog = fopen([outFile(1:end-3),'tsv'],'w');
+if fLog == -1
+    error('could not open logfile')
+end
+%print Header
+fprintf(fLog,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','onset','onsetTR','message','subjectid','run','block','trial','contrast','condition','phase','stimulus');
 Screen('FillRect', cfg.win, cfg.background);
 
 %--------------------------------------------------------------------------
@@ -126,7 +136,8 @@ for blockNum = 1:params.numBlocks
         
         draw_fixationdot(cfg,params.dotSize)
         Screen('DrawingFinished', cfg.win);
-        Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi);
+        onset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi)-startTime;
+        add_log_entry('stimOnset',onset)
         
         
         
@@ -136,19 +147,24 @@ for blockNum = 1:params.numBlocks
         if mod(blockNum,2) == 0 % Even blocks, 135deg
             if find(flickers135Timings{round(blockNum/2)} == stimNum) >= 1
                 draw_fixationdot(cfg,params.dotSize,0,params.flickerColor*cfg.Lmax_rgb)
+                mesg = 'stimOffsetWithFlicker';
             else
                 draw_fixationdot(cfg,params.dotSize,0,0)
+                mesg = 'stimOffset';
                 
             end
         else % Odd blocks, 45deg
             if find(flickers45Timings{round(blockNum/2)} == stimNum) >= 1
                 draw_fixationdot(cfg,params.dotSize,0,params.flickerColor*cfg.Lmax_rgb)
+                mesg = 'stimOffsetWithFlicker';
             else
                 draw_fixationdot(cfg,params.dotSize,0,0)
+                mesg = 'stimOffset';
             end
         end
         Screen('DrawingFinished', cfg.win);
-        Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi);
+        offset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi)-startTime;
+        add_log_entry(mesg,offset)
         
         % Safe quit mechanism (hold q to quit)
         [keyPr,~,key,~] = KbCheck;
@@ -169,7 +185,8 @@ for blockNum = 1:params.numBlocks
         end
         draw_fixationdot(cfg,params.dotSize,0,params.flickerColor*cfg.Lmax_rgb)
         Screen('DrawingFinished', cfg.win);
-        Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi);
+        flickerOn = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi)-startTime;
+        add_log_entry('flickerInPause',flickerOn)
         
         if fl == 1
             % At this point check for button presses in previous stim block
@@ -270,7 +287,7 @@ save_and_quit;
                 evt.trialDistractor_135 = flickers135Timings{blockNum};
                 evt.trialDistractor_off = flickersOffTimings{blockNum};
 
-                evt.subject = subject(1);
+                evt.subjectid = subjectid(1);
                 evt.run = run(1);
                 responses = [responses evt];
             end
@@ -286,5 +303,24 @@ save_and_quit;
             fprintf(' hits:%i, misses:%i\n',hits,misses)
         end
         
+    end
+ function add_log_entry(varargin)
+        if nargin <1
+            message = '';
+        else
+            message = varargin{1};
+        end
+        if nargin < 2
+            time = GetSecs-startTime;
+        else
+            time = varargin{2};
+        end
+        time_tr = time/cfg.TR;
+        fprintf(fLog,'%.3f\t%.3f\t%s\t%03i\t%i\t%i\t%i\t%.1f\n',time,time_tr,message,...
+            subjectid,...
+            run,...
+            blockNum,...
+            params.orientation(1+(mod(blockNum,2) == 0)),...
+            cfg.phases(stimNum));
     end
 end

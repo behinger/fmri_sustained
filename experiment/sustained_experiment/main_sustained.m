@@ -4,24 +4,29 @@
 
 % XXX: XXX
 % retinotop: 11 x TR x 6 cycles = 230 = 4 min (too short?)
-% Localizer: (2phases*6TR + 4waitTR) * 12 trials = 192 volumes = 6.16min
+% Localizer: 4TR + (2phases*6TR) * 12 trials = 148 volumes = 6.16min
 % with TR2.3
-% Task: (2phases*6TR + 4WaitTR) * 12 trials = 192 volumes => ~6.16min with TR=2.3
+% Task: 4TR + (2phases*6TR ) * 12 trials = 148 volumes => ~6.16min with TR=2.3
 %--------------------------------------------------------------------------
 tic;
 cfg = struct();
 
 cfg.do_localizer = 1; % 4 runs
-cfg.do_mainTask  = 1;
+cfg.do_mainTask  = 0;
 cfg.do_retinotopy= 0;
 
-cfg.debug = 0; % Check debugmode
+cfg.debug = 1; % Check debugmode
 
-cfg.computer_environment = 'dummy'; % could be "mri", "dummy", "work_station", "behav"
+cfg.computer_environment = 't480s'; % could be "mri", "dummy", "work_station", "behav"
 cfg.mri_scanner = 'prisma'; % could be "trio", "avanto","prisma", "essen"
 
-% 3T TR should be 3.2 or 3.8 (WB)
-cfg.CAIPI = 1;
+cfg.TR = 2.336; % CAIPI sequence Essen
+
+cfg.TR = 1.500; % 213 image volumes to be recorded
+    
+% cfg.TR = 3.408; % TR will determine stimulus timings
+
+
 cfg = setup_parameters(cfg);
 
 
@@ -38,7 +43,7 @@ fprintf('Setting up parameters \n')
 if cfg.debug
     input('!!!DEBUGMODE ACTIVATED!!! - continue with enter')
     Screen('Preference', 'SkipSyncTests', 1)
-         PsychDebugWindowConfiguration;
+%          PsychDebugWindowConfiguration;
 end
 
 
