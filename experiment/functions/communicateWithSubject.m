@@ -1,5 +1,5 @@
 function string = communicateWithSubject(windowPtr, msg, x, y, textColor, bgColor, useKbCheck, varargin)
-% Slightly modified from getechostrong
+% Slightly modified from getechostring
 % changed the "exit" string from enter to ESC.
 % Also each enter is changed to a \n
 %
@@ -81,6 +81,8 @@ string = '';
 output = [msg, ' ', string];
 
 % Write the initial message:
+Screen('DrawText',windowPtr,'Text-Communication with subject (press ESC to continue)', 100, 100);
+
 Screen('DrawText', windowPtr, output, x, y, textColor, bgColor);
 Screen('Flip', windowPtr, 0, 1);
 fprintf('SubjectCommunication: Starting writing your text (ESC to end)\n')
@@ -125,6 +127,9 @@ while true
     DrawFormattedText(windowPtr,output,x,y,textColor,60); %60 wrap at
     fprintf(output)
     fprintf('\n')
+    
+    Screen('DrawText',windowPtr,'Text-Communication with subject (press ESC to continue)', 100, 100);
+
     Screen('Flip', windowPtr, 0, 1);
 end
 
