@@ -104,9 +104,6 @@ if cfg.do_localizer
     
 end
 toc
-if cfg.writtenCommunication
-    communicateWithSubject(cfg.win,'',200,200,cfg.Lmin_rgb,cfg.background);
-end
 %% Do main Task
 if cfg.do_mainTask
     fprintf('Starting with main Task')
