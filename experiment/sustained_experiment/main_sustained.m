@@ -22,19 +22,28 @@ cfg.mri_scanner = 'prisma'; % could be "trio", "avanto","prisma", "essen"
 
 cfg.TR = 2.336; % CAIPI sequence Essen
 
-cfg.TR = 1.500; % 213 image volumes to be recorded
+% cfg.TR = 1.500; % 213 image volumes to be recorded
     
 % cfg.TR = 3.408; % TR will determine stimulus timings
 
 
-cfg = setup_parameters(cfg);
 
+
+cfg = setup_parameters(cfg);
 
 cfg.flicker.numRuns = 6; % Number of runs
 cfg.flicker.numTrials = 12 ; % Number of trials in a run
 cfg.localizer.numRuns = 2;
 % blocks == trials
 cfg.localizer.numBlocks = 10; % Total number of stimulus blocks (half as many per orientation)
+
+
+fprintf('Volumes to record Main Task: %.2f\n',((cfg.flicker.ITI + cfg.flicker.trialLength)*cfg.flicker.numTrials+cfg.flicker.scannerWaitTime)/cfg.TR)
+fprintf('Volumes to record Local: %.2f\n',((cfg.localizer.ITI + cfg.localizer.trialLength)*cfg.localizer.numBlocks+cfg.localizer.scannerWaitTime)/cfg.TR)
+
+%%
+
+
 
 cfg.writtenCommunication = 1;
 

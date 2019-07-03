@@ -16,8 +16,9 @@ end
 % Set up key experiment parameters
 
 % These keys are used if the bitsi_buttonbox is used over USB
-cfg.keys = [KbName('y') KbName('r') KbName('b') KbName('g') 49, 50, 51, 52]; %copied from essen_localiser_v4
-
+% cfg.keys = [KbName('y') KbName('r') KbName('b') KbName('g') 49, 50, 51, 52]; %copied from essen_localiser_v4
+KbName('UnifyKeyNames')
+cfg.keys = [89 82 66 71 97 98 99 100 101]; %KbName sometimes does not work?!?
 cfg.flicker = struct();
 cfg.flicker.stimSize = 12; % Diameter in degrees
 cfg.flicker.refOrient = [45, 135]; % orientations for stimuli are 45 and 135 degrees
