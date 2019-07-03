@@ -3,10 +3,9 @@
 % and one run of orientation localizer.
 
 % XXX: XXX
-% retinotop: 11 x TR x 6 cycles = 230 = 4 min (too short?)
-% Localizer: 4TR + (2phases*6TR) * 12 trials = 148 volumes = 6.16min
-% with TR2.3
-% Task: 4TR + (2phases*6TR ) * 12 trials = 148 volumes => ~6.16min with TR=2.3
+% MAin Task: TR 1.5,    234 images
+% Localizer: TR 1.5,    226 images
+
 %--------------------------------------------------------------------------
 tic;
 cfg = struct();
@@ -15,7 +14,7 @@ cfg.do_localizer = 1; %
 cfg.do_mainTask  = 1;
 cfg.do_retinotopy= 0;
 
-cfg.debug = 0; % Check debugmode
+cfg.debug = 1; % Check debugmode
 
 cfg.computer_environment = 'mri'; % could be "mri", "dummy", "work_station", "behav"
 cfg.mri_scanner = 'prisma'; % could be "trio", "avanto","prisma", "essen"
@@ -127,7 +126,7 @@ if cfg.do_mainTask
         experiment_flicker_v2(cfg,slice_randomization(randomization,str2num(SID),curRun));
         
         if curRun < max(numRuns)
-            text = ['Moving on to run ', num2str(curRun+1), ' of ', num2str(numRuns), '...'];
+            text = ['Moving on to run ', num2str(curRun+1), ' of ', num2str(max(numRuns)), '...'];
             DrawFormattedText(cfg.win, text, 'center', 'center');
             Screen('Flip',cfg.win);
             waitQKey(cfg)
