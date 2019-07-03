@@ -10,8 +10,8 @@
 tic;
 cfg = struct();
 
-cfg.do_localizer = 1; % 4 runs
-cfg.do_mainTask  = 0;
+cfg.do_localizer = 1; % 
+cfg.do_mainTask  = 1;
 cfg.do_retinotopy= 0;
 
 cfg.debug = 1; % Check debugmode
@@ -92,7 +92,7 @@ toc
 if cfg.do_localizer
     fprintf('Starting with localizer\n')
     Screen('Flip',cfg.win);
-    for curRun = 1:cfg.localizer.numRuns
+	    for curRun = 1:cfg.localizer.numRuns
         experiment_localizerOrientation(cfg,randomization.subject(1),curRun);
         if cfg.writtenCommunication
             communicateWithSubject(cfg.win,'',200,200,cfg.Lmin_rgb,cfg.background);
