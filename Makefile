@@ -12,6 +12,7 @@ toolbox_memolab = ${toolboxdir}/memolab
 toolbox_exportfig = ${toolboxdir}/export_fig
 
 toolbox_gramm = ${toolboxdir}/gramm
+toolbox_bids = ${toolboxdir}/bids-matlab
 
 ${toolboxdir}:
 	mkdir -p ${toolboxdir}/../
@@ -20,7 +21,7 @@ ${toolboxdir}:
 export PATH:=/opt/matlab/R2018a/bin/:$(PATH)
 
 
-toolboxes: | $(toolbox_tvm) $(toolbox_vista) $(toolbox_spm) $(toolbox_memolab) $(toolbox_gramm)
+toolboxes: | $(toolbox_tvm) $(toolbox_vista) $(toolbox_spm) $(toolbox_memolab) $(toolbox_gramm) ${toolbox_bids}
 	echo 'done'
 
 $(toolbox_vista): | ${toolboxdir}
@@ -33,7 +34,7 @@ $(toolbox_spm): | ${toolboxdir}
 	wget https://www.fil.ion.ucl.ac.uk/spm/download/restricted/eldorado/spm12.zip
 	unzip -q spm12.zip -d ${toolboxdir} #spm12 folder is already in zip
 	@echo $(PATH)
-	cd ${toolbox_spm}/src && make && make_install
+	cd ${toolbox_spm}/src && make && make install
 	rm spm12.zip
 
 $(toolbox_memolab): | ${toolboxdir} $(toolbox_exportfig) $(toolbox_artrepair)
@@ -50,3 +51,5 @@ $(toolbox_exportfig): | ${toolboxdir}
  
 $(toolbox_gramm): | ${toolboxdir}
 	git clone https://github.com/piermorel/gramm $(toolbox_gramm)
+$(toolbox_bids): | ${toolboxdir}
+	git clone https://github.com/bids-standard/bids-matlab $(toolbox_bids)
