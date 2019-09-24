@@ -2,7 +2,7 @@
 function waitForScanTrigger_KB(cfg)
 if nargin == 1&& cfg.mriPulse && strcmp(class(cfg.bitsi_scanner),'Bitsi_Scanner')
     cfg.bitsi_scanner.clearResponses()
-    cfg.bitsi_scanner.getResponse(60,true)
+    cfg.bitsi_scanner.getResponse(6000,true)
     return
 end
 fprintf(' Waiting for MR trigger ... ')
