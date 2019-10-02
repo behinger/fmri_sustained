@@ -1,12 +1,12 @@
-function experiment_flicker_v2(cfg,random_block)
+function experiment_flicker_v2(cfg,randomization_run)
 %--------------------------------------------------------------------------
 if strcmp(class(cfg.bitsi_buttonbox),'Bitsi_Scanner')
     cfg.bitsi_buttonbox.clearResponses;
     cfg.bitsi_scanner.clearResponses;
 end
 cfg.numSavedResponses = 0;
-subjectid = random_block.subject(1);
-runid = random_block.run(1);
+subjectid = randomization_run.subject(1);
+runid = randomization_run.run(1);
 
 outFile = fullfile('.','MRI_data',sprintf('sub-%02i',subjectid),'ses-01','beh',...
     sprintf('sub-%02i_ses-01_task-sustained_run-%02i.mat',subjectid,runid));
@@ -18,7 +18,7 @@ if fLog == -1
     error('could not open logfile')
 end
 %print Header
-fprintf(fLog,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','onset','onsetTR','message','subject','run','block','attention','condition','phase','stimulus');
+fprintf(fLog,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','onset','onsetTR','message','subject','run','block','condition','phase','stimulus');
 
 
 Screen('FillRect', cfg.win, cfg.background);
@@ -27,7 +27,7 @@ Screen('FillRect', cfg.win, cfg.background);
 % Generate stimulus textures
 Screen('DrawText',cfg.win,'Generating textures...', 100, 100);
 Screen('Flip',cfg.win);
-params = cfg.flicker;
+params = cfg.sustained;
 cfg = setup_stimuli(cfg,params); % adapt must be a struct of cfg, e.g. cfg.adapt must exist with necessary information
 
 %--------------------------------------------------------------------------
@@ -36,23 +36,15 @@ cfg = setup_stimuli(cfg,params); % adapt must be a struct of cfg, e.g. cfg.adapt
 
 setup_kbqueue(cfg);
 responses = [];
-stimtimings = nan(6,length(random_block.run));
-expectedtimings= nan(6,length(random_block.run));
+stimtimings = nan(6,length(randomization_run.run));
+expectedtimings= nan(6,length(randomization_run.run));
 
 %--------------------------------------------------------------------------
-% Distractor Task Flicker random_block
-ntrial = length(random_block.subject);
-% trialDistractor = setup_distractortimings(params,ntrial,params.ITI); %target only in ITI
-trialDistractor_stimulus = setup_distractortimings(params,ntrial,params.trialLength-2); % only when the stimulus is shown, but not in the first and last second
-trialDistractor_dot = setup_distractortimings(params,ntrial,params.trialLength-2); % only when the stimulus is shown, but not in the first and last second
-% not in the first second
-for k = 1:length(trialDistractor_stimulus)
-    trialDistractor_stimulus{k} = (trialDistractor_stimulus{k}+1);
-    
-    % We want to changes to be synchronous with the phase-switches
-    
-    
-end
+% Distractor Task Flicker randomization_run
+nblocks = length(randomization_run.subject);
+
+
+trialDistractor_dot = setup_distractortimings(params,nblocks,params.trialLength); % only when the stimulus is shown, but not in the first and last second
 
 %--------------------------------------------------------------------------
 
@@ -64,35 +56,26 @@ Screen('FillRect',cfg.win,cfg.background);
 fprintf('Showing Instructions: waiting for mouse click (waiting for ScanTrigger after this)')
 
 while ~any(clicks)
-    colorInside = 0;
     introtex = cfg.stimTex(1);
     
-    flicker = mod(GetSecs,1)<cfg.flicker.targetsDuration; % flicker every 1s
-    if strcmp(random_block.attention{1},'attentionOnFixation')
-        
-        if flicker
-            colorInside = 255*cfg.flicker.targetsColor;
-        else
-            colorInside = 0;
-        end
-        instructions = 'Look at the fixation dot in the centre of the screen at all times\n\n\n\n Press a key if the FIXATION DOT flickers \n\n\n\n Run length: 5 minutes';
-        Screen('DrawText',cfg.win,'Waiting for mouse click...', 100, 100);
-        
+    flicker = mod(GetSecs,1)<cfg.sustained.targetsDuration; % flicker every 1s
+    
+    
+    if flicker
+        colorInside = 255*cfg.sustained.targetsColor;
     else
-        instructions = 'Look towards the dot in the centre of the screen at all times\n\n\n\n Press a key if the STIMULUS flickers \n\n\n\n Run length: 5 minutes';
-        if flicker
-            introtex = cfg.stimTexCatch(1);
-        else
-            % Always 0 or in rotation condition
-            introtex = cfg.stimTex(1);
-        end
+        colorInside = 0;
     end
+    instructions = 'Look at the fixation dot in the centre of the screen at all times\n\n\n\n Press a key if the FIXATION DOT flickers \n\n\n\n Run length: 5 minutes';
+    Screen('DrawText',cfg.win,'Waiting for mouse click...', 100, 100);
+    
+    
     Screen('DrawTexture',cfg.win,introtex,[],OffsetRect(CenterRect([0 0, 0.5*cfg.stimsize],cfg.rect),cfg.width/4,0));
     
     
     
     [~,~,~] = DrawFormattedText(cfg.win, instructions, 'left', 'center'); % requesting 3 arguments disables clipping ;)
-    draw_fixationdot(cfg,cfg.flicker.dotSize,0,colorInside,cfg.width/4*3,cfg.height/2)
+    draw_fixationdot(cfg,cfg.sustained.dotSize,0,colorInside,cfg.width/4*3,cfg.height/2)
     
     Screen('Flip',cfg.win);
     
@@ -126,8 +109,8 @@ startTime = Screen('Flip',cfg.win); % Store time experiment started
 expectedTime = 0; % This will record what the expected event duration should be
 firstTrial = true; % Flag to show we are on first trial
 tic
-for trialNum = 1:ntrial
-    
+for blockNum = 1:nblocks
+        phase_ix = randomization_run.phase(blockNum); % just so every block starts with a different phase, could be random as well
     % Draw first reference stimulus after ITI
     if firstTrial
         expectedTime = expectedTime + params.scannerWaitTime;
@@ -135,109 +118,79 @@ for trialNum = 1:ntrial
         
     end
     
-    singleStimDuration = (1/random_block.condition(trialNum))/2; %divided by two because half of it will be stimulus, half mas
+    switch randomization_run.stimulus{blockNum}
+        case 'gabor45'
+            rotationDecrement = 45;
+            stimulusTexture = cfg.stimTex(phase_ix);
+        case 'gabor135'
+            rotationDecrement = 135;
+            stimulusTexture = cfg.stimTex(phase_ix);
+            
+        case 'noise'
+            rotationDecrement = 0;
+            warning('not yet implemented')
+%             stimulusTexture = cfg.stimNoise(phase_ix); % phase_ix represents the stimulus ID in this case
+            stimulusTexture = cfg.stimTex(phase_ix);
+        otherwise
+            error('not implemented')
+    end
     
+    switch randomization_run.condition{blockNum}
+        case 'continuous'
+            singleStimDuration = params.trialLength; %divided by two because half of it will be stimulus, half mas
+            stimOffDuration = 0;
+        case 'flashed'
+            singleStimDuration = 2*2*cfg.halfifi;
+            n = 30; % siglani 2017, 30 stimuli a 2Frames in 8s
+            stimOffDuration = (params.trialLength-n*2*2*cfg.halfifi)/n;
+        otherwise
+            error('not implemented')
+    end
     
-    catchDuration = 1;%s
-    warning('BalanceStimulation Time!!')
+        
+  
     
-    %% FIRST STIMULUS
     expectedTime_start = expectedTime;
-    expectedtimings(1,trialNum) = expectedTime;
+    expectedtimings(1,blockNum) = expectedTime;
     
     
     firstStim = 0;
-    distractorTiming_stimulus = trialDistractor_stimulus{trialNum}+expectedTime;
-    distractorTiming_dot = trialDistractor_dot{trialNum}+expectedTime;
-    phase_ix = random_block.phase(trialNum); % just so every trial starts with a different phase, could be random as well
+    distractorTiming_dot = trialDistractor_dot{blockNum}+expectedTime;
+
     drawingtime = 2*cfg.halfifi;
     draw_fixationdot(cfg,params.dotSize)
     
     while true
-        
-        catchtype = 'spatialFreq'; % could be 'rotation' as well
-        % Define Rotation decrement (thisis also indicator of catch trial)
-        if any(distractorTiming_stimulus>(expectedTime) & distractorTiming_stimulus<(expectedTime+catchDuration))
-            rotationDecrement = (randi([0,1],1)*2-1) * 45/4;
-        else
-            rotationDecrement = 0;
-        end
-        
-        
-        
-        % Choose a new phase that is at least 3 different from the old
-        % phase in order to make large jumps more prominent
-        new_phase = randi(length(cfg.stimTex)-3,1)+3;
-        % go in either way in minimal steps of 3
-        new_phase = randi([0,1])*2-1*new_phase;
-        phase_ix = phase_ix+new_phase;
-        % we could have a phase_ix higher than the length of stimuli,
-        % wrap around, add+1 because mod(12,12) = 0;
-        phase_ix = mod(phase_ix,length(cfg.stimTex))+1;
-        
-        
-        % if, while showing the mask, we shold have the onset of a white
+             
+        % if, while showing the mask, we should have the onset of a white
         % dot, draw it & flip it
-        if strcmp(catchtype,'spatialFreq') && rotationDecrement ~=0
-            Screen('DrawTexture',cfg.win,cfg.stimTexCatch(phase_ix),[],[],params.refOrient(random_block.stimulus(trialNum)));
-        else
-            % Always 0 or in rotation condition
-            Screen('DrawTexture',cfg.win,cfg.stimTex(phase_ix),[],[],rotationDecrement+params.refOrient(random_block.stimulus(trialNum)));
-        end
         
+        Screen('DrawTexture',cfg.win,stimulusTexture,[],[],rotationDecrement);
         draw_fixationdot_task(cfg,params.dotSize,params.targetsColor*cfg.Lmax_rgb,distractorTiming_dot,startTime,expectedTime,drawingtime,1)
         
         stimOnset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi,1)-startTime;
         
-        if strcmp(catchtype,'spatialFreq') && rotationDecrement ~=0
-            
-            add_log_entry('stimCatch',stimOnset)
-        else
-            add_log_entry('stimOnset',stimOnset)
-        end
+        add_log_entry('stimOnset',stimOnset)
         
         % how long should the stimulus be on?
         expectedTime = expectedTime + singleStimDuration;
         
         draw_fixationdot_task(cfg,params.dotSize,params.targetsColor*cfg.Lmax_rgb,distractorTiming_dot,startTime,expectedTime,drawingtime)
-        %% Mask
         
-        % Catch Trial on Mask
-        if any(distractorTiming_stimulus>(expectedTime) & distractorTiming_stimulus<(expectedTime+catchDuration))
-            rotationDecrement = (randi([0,1],1)*2-1) * 45/4;
-            %             warning('rotation! \n')
-        else
-            rotationDecrement = 0;
-        end
-        
-        if strcmp(catchtype,'spatialFreq') && rotationDecrement ~=0
-            Screen('DrawTexture',cfg.win,cfg.stimTexMaskCatch(phase_ix),[],[],params.refOrient(random_block.stimulus(trialNum)));
-        else
-            Screen('DrawTexture',cfg.win,cfg.stimTexMask(phase_ix),[],[],rotationDecrement+params.refOrient(random_block.stimulus(trialNum)));
-        end
-        
-        
-        %         Screen('DrawingFinished', cfg.win);
-        
-        draw_fixationdot_task(cfg,params.dotSize,params.targetsColor*cfg.Lmax_rgb,distractorTiming_dot,startTime,expectedTime,drawingtime,1)
         stimOffset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi,1)-startTime;
-        if strcmp(catchtype,'spatialFreq') && rotationDecrement ~=0
-            add_log_entry('maskCatch',stimOffset)
-        else
-            add_log_entry('maskOnset',stimOffset)
-        end
-        
+        add_log_entry('maskOnset',stimOffset)
+                
         
         % save for some kind of stimulus timing check
         if firstStim
-            stimtimings(1,trialNum) = stimOnset;
-            stimtimings(2,trialNum) = stimOffset;
-            expectedtimings(2,trialNum) = expectedTime;
+            stimtimings(1,blockNum) = stimOnset;
+            stimtimings(2,blockNum) = stimOffset;
+            expectedtimings(2,blockNum) = expectedTime;
             firstStim = 0;
         end
         
-        %how long should mask be one?
-        expectedTime = expectedTime + singleStimDuration;
+        %how long should stimulus be off?
+        expectedTime = expectedTime + stimOffDuration;
         
         draw_fixationdot_task(cfg,params.dotSize,params.targetsColor*cfg.Lmax_rgb,distractorTiming_dot,startTime,expectedTime,drawingtime)
         % Exit if time is over
@@ -292,12 +245,12 @@ for trialNum = 1:ntrial
         if evt.Pressed==1 % don't record key releases
             add_log_entry('buttonpress',evt.Time-startTime);
 
-            evt.trialnumber = trialNum;
+            evt.blockNumber = blockNum;
             evt.TimeMinusStart = evt.Time - startTime;
-            evt.trialDistractor_stimulus = trialDistractor_stimulus{trialNum};
-            evt.trialDistractor_dot = trialDistractor_dot{trialNum};
-            evt.subject = random_block.subject(1);
-            evt.run = random_block.run(1);
+            evt.trialDistractor_stimulus = trialDistractor_stimulus{blockNum};
+            evt.trialDistractor_dot = trialDistractor_dot{blockNum};
+            evt.subject = randomization_run.subject(1);
+            evt.run = randomization_run.run(1);
             responses = [responses evt];
         end
     end
@@ -337,7 +290,7 @@ save_and_quit;
         
         % Save out results
         try
-            save(outFile, 'random_block','cfg', 'responses','stimtimings','expectedtimings','trialDistractor_stimulus','trialDistractor_dot');
+            save(outFile, 'randomization_run','cfg', 'responses','stimtimings','expectedtimings','trialDistractor_stimulus','trialDistractor_dot');
         catch
             disp('Could not save outFile - may not exist');
         end
@@ -365,14 +318,13 @@ save_and_quit;
         end
         time_tr = time/cfg.TR;
         
-        fprintf(fLog,'%.3f\t%.3f\t%s\t%03i\t%i\t%i\t%s\t%i\t%.3f\t%i\n',time,time_tr,message,...
-            random_block.subject(trialNum),...
-            random_block.run(trialNum),...
-            random_block.trial(trialNum),...
-             random_block.attention{trialNum},...
-            random_block.condition(trialNum),...
-            params.phases(random_block.phase(trialNum)),...
-            random_block.stimulus(trialNum));
+        fprintf(fLog,'%.3f\t%.3f\t%s\t%03i\t%i\t%i\t%s\t%.3f\t%s\n',time,time_tr,message,...
+            randomization_run.subject(blockNum),...
+            randomization_run.run(blockNum),...
+            randomization_run.block(blockNum),...
+            randomization_run.condition{blockNum},...
+            params.phases(randomization_run.phase(blockNum)),...
+            randomization_run.stimulus{blockNum});
     end
 
     function draw_fixationdot_task(cfg,dotSize,targetsColor,distractorTiming_dot,startTime,expectedTime,drawingtime,noflip)
@@ -382,7 +334,7 @@ save_and_quit;
             noflip = 0;
         end
         
-        dotDuration= cfg.flicker.targetsDuration;
+        dotDuration= cfg.sustained.targetsDuration;
         
         distractorTiming_dot(distractorTiming_dot<(GetSecs-startTime-dotDuration-0.5*drawingtime)) = [];
         expectedTime = (expectedTime);
