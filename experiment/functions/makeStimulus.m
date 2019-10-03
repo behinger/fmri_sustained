@@ -1,4 +1,4 @@
-function gaborPatch = makeGaborStimulus(cfg,params)
+function gaborPatch = makeStimulus(cfg,params)
 % spatialFrequency: cycles/degree
 % samlaw V2 edit 30/03/2017 - inner_degree and start_linear_decay_in_degree
 % now input arguments
@@ -37,6 +37,14 @@ if isfield(params,'radial')&& params.radial
     dist = sqrt(x.^2+y.^2);
     
     stimulusMatrix = sin(radiansPerPixel*dist+params.phaseGrating);
+elseif isfield(params,'pinkNoise') && params.pinkNoise
+    stimulusMatrix= randnd(-1,size(x));
+    
+    stimulusMatrix = stimulusMatrix - min(stimulusMatrix(:));
+    
+    stimulusMatrix = stimulusMatrix./max(stimulusMatrix(:)); % between 0 and 1
+    stimulusMatrix = stimulusMatrix.*2 - 1; %between -1 and 1
+    
 elseif isfield(params,'pinkNoiseFiltered')&&params.pinkNoiseFiltered
     %%
     dist = sqrt(x.^2+y.^2);
@@ -87,6 +95,8 @@ end
 % the difference between Lmin_rgb and background (the differences are equal
 % in luminance, but not in rgb), correct the range of the positive values
 % of stimulusMatrix.
+min(stimulusMatrix(:))
+max(stimulusMatrix(:))
 rgb_range_up = Lmax_rgb - cfg.background;
 rgb_range_down = cfg.background - Lmin_rgb;
 rgb_range_up_down_ratio = rgb_range_up/rgb_range_down;

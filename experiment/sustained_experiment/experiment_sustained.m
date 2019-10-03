@@ -1,4 +1,4 @@
-function experiment_flicker_v2(cfg,randomization_run)
+function experiment_sustained(cfg,randomization_run)
 %--------------------------------------------------------------------------
 if strcmp(class(cfg.bitsi_buttonbox),'Bitsi_Scanner')
     cfg.bitsi_buttonbox.clearResponses;
@@ -128,9 +128,8 @@ for blockNum = 1:nblocks
             
         case 'noise'
             rotationDecrement = 0;
-            warning('not yet implemented')
-%             stimulusTexture = cfg.stimNoise(phase_ix); % phase_ix represents the stimulus ID in this case
-            stimulusTexture = cfg.stimTex(phase_ix);
+            %           
+            stimulusTexture = cfg.stimTexPinkNoise(phase_ix);
         otherwise
             error('not implemented')
     end
@@ -148,8 +147,8 @@ for blockNum = 1:nblocks
     end
     
         
-  
-    
+  %%
+%     expectedTime=0
     expectedTime_start = expectedTime;
     expectedtimings(1,blockNum) = expectedTime;
     
@@ -172,25 +171,30 @@ for blockNum = 1:nblocks
         
         add_log_entry('stimOnset',stimOnset)
         
-        % how long should the stimulus be on?
+          % how long should the stimulus be on?
         expectedTime = expectedTime + singleStimDuration;
         
         draw_fixationdot_task(cfg,params.dotSize,params.targetsColor*cfg.Lmax_rgb,distractorTiming_dot,startTime,expectedTime,drawingtime)
         
+        
+        Screen('DrawTexture',cfg.win,cfg.stimTexMask(1),[],[]);
+        
+        draw_fixationdot_task(cfg,params.dotSize,params.targetsColor*cfg.Lmax_rgb,distractorTiming_dot,startTime,expectedTime,drawingtime,1)
+        
         stimOffset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi,1)-startTime;
         add_log_entry('maskOnset',stimOffset)
-                
+        
         
         % save for some kind of stimulus timing check
         if firstStim
-            stimtimings(1,blockNum) = stimOnset;
-            stimtimings(2,blockNum) = stimOffset;
-            expectedtimings(2,blockNum) = expectedTime;
+            stimtimings(1,trialNum) = stimOnset;
+            stimtimings(2,trialNum) = stimOffset;
+            expectedtimings(2,trialNum) = expectedTime;
             firstStim = 0;
         end
         
-        %how long should stimulus be off?
-        expectedTime = expectedTime + stimOffDuration;
+        %how long should mask be one?
+        expectedTime = expectedTime + stimOffDuration
         
         draw_fixationdot_task(cfg,params.dotSize,params.targetsColor*cfg.Lmax_rgb,distractorTiming_dot,startTime,expectedTime,drawingtime)
         % Exit if time is over
@@ -200,14 +204,14 @@ for blockNum = 1:nblocks
         end
         
         
-        
     end
+    
     Screen('FillRect',cfg.win,cfg.background)
     draw_fixationdot(cfg,params.dotSize)
-    
+   
     onset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi)-startTime;
     add_log_entry('breakOnset',onset);
-    
+   %% 
     
     % overwrite expected Time to catch up with minor fluctiations in
     % expected Time
@@ -247,7 +251,7 @@ for blockNum = 1:nblocks
 
             evt.blockNumber = blockNum;
             evt.TimeMinusStart = evt.Time - startTime;
-            evt.trialDistractor_stimulus = trialDistractor_stimulus{blockNum};
+%             evt.trialDistractor_stimulus = trialDistractor_stimulus{blockNum};
             evt.trialDistractor_dot = trialDistractor_dot{blockNum};
             evt.subject = randomization_run.subject(1);
             evt.run = randomization_run.run(1);

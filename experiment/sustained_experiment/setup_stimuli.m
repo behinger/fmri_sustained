@@ -15,28 +15,24 @@ for i = 1:length(params.phases)
     params.plaid = 0;
     params.phaseGrating = params.phases(i);
     
-    stim = makeGaborStimulus(cfg,params);
-    
-    % catch stimulus with slightly higher spatial freq
-    tmp = params.spatialFrequency;
-    params.spatialFrequency = [params.spatialFrequency_catch];
-    stimCatch = makeGaborStimulus(cfg,params);
-    
-    params.plaid = i;
-    params.spatialFrequency = [params.spatialFrequency_catch params.spatialFrequency_catch];
-    maskCatch = makeGaborStimulus(cfg,params);
-    params.spatialFrequency = [tmp tmp];
+    stim = makeStimulus(cfg,params);
 
     
-    
-    stimMask= makeGaborStimulus(cfg,params);
-    params.spatialFrequency = [tmp];
     cfg.stimTex(i) = Screen('MakeTexture', cfg.win, stim);
-    cfg.stimTexMask(i) = Screen('MakeTexture', cfg.win, stimMask);
-    cfg.stimTexCatch(i) = Screen('MakeTexture', cfg.win, stimCatch);
-    cfg.stimTexMaskCatch(i) = Screen('MakeTexture', cfg.win, maskCatch);
+    tmp = params;
+    tmp.pinkNoise = 1;
+    stimPinkNoise = makeStimulus(cfg,tmp);
+
+
+
+    
+    cfg.stimTexPinkNoise(i) = Screen('MakeTexture',cfg.win,stimPinkNoise);
     
 end
+stimMask= stim;
+stimMask(:) = cfg.background;
+cfg.stimTexMask = Screen('MakeTexture', cfg.win, stimMask);
+
 
 cfg.stimsize = size(stim);
 
