@@ -31,8 +31,8 @@ cfg.sustained.contrast = 1; % max contrast
 cfg.sustained.start_linear_decay_in_degree = 0.5;
 
 
-
-cfg.sustained.trialLength = round(8/cfg.TR)*cfg.TR; %
+cfg.sustained.trialLength = 8;
+cfg.sustained.trialLengthfullTR = ceil(8/cfg.TR)*cfg.TR; %
 cfg.sustained.scannerWaitTime = cfg.TR * 3; % Time to wait after scan pulse - must be multiple of TR
 
 

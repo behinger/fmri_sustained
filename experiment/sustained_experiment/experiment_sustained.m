@@ -160,27 +160,20 @@ for blockNum = 1:nblocks
     draw_fixationdot(cfg,params.dotSize)
     
     while true
-             
-        % if, while showing the mask, we should have the onset of a white
-        % dot, draw it & flip it
-        
+        % Show the stimulus
         Screen('DrawTexture',cfg.win,stimulusTexture,[],[],rotationDecrement);
         draw_fixationdot_task(cfg,params.dotSize,params.targetsColor*cfg.Lmax_rgb,distractorTiming_dot,startTime,expectedTime,drawingtime,1)
-        
         stimOnset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi,1)-startTime;
-        
         add_log_entry('stimOnset',stimOnset)
         
           % how long should the stimulus be on?
         expectedTime = expectedTime + singleStimDuration;
-        
+        % do the fixdotpoint flip if necessary
         draw_fixationdot_task(cfg,params.dotSize,params.targetsColor*cfg.Lmax_rgb,distractorTiming_dot,startTime,expectedTime,drawingtime)
         
-        
+        %draw a gray background on top of the stimulus
         Screen('DrawTexture',cfg.win,cfg.stimTexMask(1),[],[]);
-        
         draw_fixationdot_task(cfg,params.dotSize,params.targetsColor*cfg.Lmax_rgb,distractorTiming_dot,startTime,expectedTime,drawingtime,1)
-        
         stimOffset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi,1)-startTime;
         add_log_entry('maskOnset',stimOffset)
         
@@ -194,11 +187,12 @@ for blockNum = 1:nblocks
         end
         
         %how long should mask be one?
-        expectedTime = expectedTime + stimOffDuration
+        expectedTime = expectedTime + stimOffDuration;
         
+        % In case its necessary to flash the dot
         draw_fixationdot_task(cfg,params.dotSize,params.targetsColor*cfg.Lmax_rgb,distractorTiming_dot,startTime,expectedTime,drawingtime)
         % Exit if time is over
-        if (expectedTime - expectedTime_start) > params.trialLength
+        if ((expectedTime - expectedTime_start)+2*drawingtime) > params.trialLength
             
             break
         end
@@ -215,7 +209,7 @@ for blockNum = 1:nblocks
     
     % overwrite expected Time to catch up with minor fluctiations in
     % expected Time
-    expectedTime = expectedTime_start+params.trialLength + params.ITI;
+    expectedTime = expectedTime_start+params.trialLengthfullTR + params.ITI;
     
     
     % Read out all the button presses

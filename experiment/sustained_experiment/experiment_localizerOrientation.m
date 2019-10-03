@@ -150,7 +150,7 @@ for blockNum = 1:params.numBlocks
         % Find out if fixation should be changing this trial
         if mod(blockNum,2) == 0 % Even blocks, 135deg
             if find(flickers135Timings{round(blockNum/2)} == stimNum) >= 1
-                draw_fixationdot(cfg,params.dotSize,0,params.flickerColor*cfg.Lmax_rgb)
+                draw_fixationdot(cfg,params.dotSize,0,params.targetsColor*cfg.Lmax_rgb)
                 mesg = 'stimOffsetWithFlicker';
             else
                 draw_fixationdot(cfg,params.dotSize,0,0)
@@ -159,7 +159,7 @@ for blockNum = 1:params.numBlocks
             end
         else % Odd blocks, 45deg
             if find(flickers45Timings{round(blockNum/2)} == stimNum) >= 1
-                draw_fixationdot(cfg,params.dotSize,0,params.flickerColor*cfg.Lmax_rgb)
+                draw_fixationdot(cfg,params.dotSize,0,params.targetsColor*cfg.Lmax_rgb)
                 mesg = 'stimOffsetWithFlicker';
             else
                 draw_fixationdot(cfg,params.dotSize,0,0)
@@ -188,7 +188,7 @@ for blockNum = 1:params.numBlocks
         else
             expectedTime = expectedTime + (flickersOffTimings{blockNum}(fl) - (flickersOffTimings{blockNum}(fl-1) + params.ISI));
         end
-        draw_fixationdot(cfg,params.dotSize,0,params.flickerColor*cfg.Lmax_rgb)
+        draw_fixationdot(cfg,params.dotSize,0,params.targetsColor*cfg.Lmax_rgb)
         Screen('DrawingFinished', cfg.win);
         flickerOn = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi)-startTime;
         add_log_entry('flickerInPause',flickerOn)
