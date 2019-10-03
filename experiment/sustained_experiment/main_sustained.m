@@ -10,11 +10,11 @@
 tic;
 cfg = struct();
 
-cfg.do_localizer = 1; % 
+cfg.do_localizer = 0; % 
 cfg.do_mainTask  = 1;
 cfg.do_retinotopy= 0;
 
-cfg.debug =0; % Check debugmode
+cfg.debug =1; % Check debugmode
 
 cfg.computer_environment = 'dummy'; % could be "mri", "dummy", "work_station", "behav" "t480s"
 cfg.mri_scanner = 'prisma'; % could be "trio", "avanto","prisma", "essen"
@@ -30,7 +30,7 @@ cfg.TR = 2.336; % CAIPI sequence Essen
 
 cfg = setup_parameters(cfg);
 
-cfg.sustained.numRuns = 7; % Number of runs
+cfg.sustained.numRuns = 8; % Number of runs
 cfg.sustained.numBlocks = 12 ; % Number of trials in a run
 cfg.localizer.numRuns = 2;
 cfg.localizer.numBlocks = 10; % Total number of stimulus blocks (half as many per orientation)
