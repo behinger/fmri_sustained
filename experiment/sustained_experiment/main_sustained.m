@@ -14,7 +14,7 @@ cfg.do_localizer = 0; %
 cfg.do_mainTask  = 1;
 cfg.do_retinotopy= 0;
 
-cfg.debug =1; % Check debugmode
+cfg.debug =0; % Check debugmode
 
 cfg.computer_environment = 'mri'; % could be "mri", "dummy", "work_station", "behav" "t480s"
 cfg.mri_scanner = 'prisma'; % could be "trio", "avanto","prisma", "essen"
