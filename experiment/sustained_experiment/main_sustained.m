@@ -10,16 +10,16 @@
 tic;
 cfg = struct();
 
-cfg.do_localizer = 1; % 
+cfg.do_localizer = 0; % 
 cfg.do_mainTask  = 1;
 cfg.do_retinotopy= 0;
 
 cfg.debug =0; % Check debugmode
 
-cfg.computer_environment = 'dummy'; % could be "mri", "dummy", "work_station", "behav" "t480s"
+cfg.computer_environment = 'mri'; % could be "mri", "dummy", "work_station", "behav" "t480s"
 cfg.mri_scanner = 'prisma'; % could be "trio", "avanto","prisma", "essen"
-
-cfg.TR = 2.336; % CAIPI sequence Essen
+cfg.TR = 1.5;
+% cfg.TR = 2.336; % CAIPI sequence Essen
 
 % cfg.TR = 1.500; % 213 image volumes to be recorded
     
