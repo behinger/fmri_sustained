@@ -18,7 +18,7 @@ if fLog == -1
     error('could not open logfile')
 end
 %print Header
-fprintf(fLog,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','onset','onsetTR','message','subject','run','block','condition','phase','stimulus');
+fprintf(fLog,'%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n','onset','onsetTR','message','subject','run','block','condition','phase','stimulus');
 
 
 Screen('FillRect', cfg.win, cfg.background);
