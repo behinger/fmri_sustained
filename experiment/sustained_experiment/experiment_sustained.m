@@ -175,7 +175,7 @@ for blockNum = 1:nblocks
         Screen('DrawTexture',cfg.win,cfg.stimTexMask(1),[],[]);
         draw_fixationdot_task(cfg,params.dotSize,params.targetsColor*cfg.Lmax_rgb,distractorTiming_dot,startTime,expectedTime,drawingtime,1)
         stimOffset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi,1)-startTime;
-        add_log_entry('maskOnset',stimOffset)
+        add_log_entry('stimOffset',stimOffset)
         
         
         % save for some kind of stimulus timing check
