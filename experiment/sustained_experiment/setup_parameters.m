@@ -41,7 +41,7 @@ cfg.sustained.scannerWaitTime = cfg.TR * 3; % Time to wait after scan pulse - mu
 % cfg.sustained.stimdur.interrupt_fast = [0.1,0.1]; % stim vs. mask
 
 
-cfg.sustained.ITI = round(12/cfg.TR)*cfg.TR;%2*cfg.TR;
+cfg.sustained.ITI = round(14/cfg.TR)*cfg.TR;%2*cfg.TR;
 
 cfg.sustained.dotSize = 1.5*[0.25 0.06]; % Size of fixation dot in pixels
 % cfg.sustained.increment = 0.25; % Increment to increase thresholds by
@@ -58,7 +58,7 @@ cfg.localizer.orientation = [45 135];
 
 
 cfg.localizer.stimBlockLength = round(16/cfg.TR)*cfg.TR; %
-cfg.localizer.offBlockLength = round(12/cfg.TR)*cfg.TR; %
+cfg.localizer.offBlockLength = round(122/cfg.TR)*cfg.TR; %
 
 cfg.localizer.scannerWaitTime = cfg.TR * 4; % Time to wait after scan pulse - must be multiple of TR
     

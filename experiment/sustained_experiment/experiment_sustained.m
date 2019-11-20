@@ -127,6 +127,7 @@ for blockNum = 1:nblocks
             stimulusTexture = cfg.stimTex(phase_ix);
             
         case 'noise'
+            error('shouldnt be here anymore')
             rotationDecrement = 0;
             %           
             stimulusTexture = cfg.stimTexPinkNoise(phase_ix);
@@ -135,13 +136,35 @@ for blockNum = 1:nblocks
     end
     
     switch randomization_run.condition{blockNum}
-        case 'continuous'
-            singleStimDuration = params.trialLength; %divided by two because half of it will be stimulus, half mas
+        
+        case 'continuous_4s'
+            singleStimDuration = 4; 
             stimOffDuration = 0;
-        case 'flashed'
+            params.trialLength = 4;
+        case 'continuous_6s'
+            singleStimDuration = 6; 
+            stimOffDuration = 0;
+            params.trialLength = 6;
+        case 'continuous_8s'
+            singleStimDuration = 8; 
+            stimOffDuration = 0;
+            params.trialLength = 8;
+            
+        case 'flashed_4s'
+            singleStimDuration = 2*2*cfg.halfifi;
+            params.trialLength = 4;
+            n = 16; % siglani 2017, 30 stimuli a 2Frames in 8s
+            stimOffDuration = (4-n*2*2*cfg.halfifi)/n;
+        case 'flashed_6s'
+            singleStimDuration = 2*2*cfg.halfifi;
+            n = 24; % siglani 2017, 30 stimuli a 2Frames in 8s
+            stimOffDuration = (6-n*2*2*cfg.halfifi)/n;
+            params.trialLength = 6;
+        case 'flashed_8s'
             singleStimDuration = 2*2*cfg.halfifi;
             n = 30; % siglani 2017, 30 stimuli a 2Frames in 8s
-            stimOffDuration = (params.trialLength-n*2*2*cfg.halfifi)/n;
+            stimOffDuration = (8-n*2*2*cfg.halfifi)/n;
+            params.trialLength = 8;
         otherwise
             error('not implemented')
     end
@@ -209,8 +232,9 @@ for blockNum = 1:nblocks
     
     % overwrite expected Time to catch up with minor fluctiations in
     % expected Time
-    expectedTime = expectedTime_start+params.trialLengthfullTR + params.ITI;
-    
+%     expectedTime = expectedTime_start+params.trialLengthfullTR + params.ITI;
+    trialLengthfullTR = ceil(singleStimDuration/cfg.TR)*cfg.TR;
+    expectedTime = expectedTime_start+trialLengthfullTR + params.ITI;
     
     % Read out all the button presses
     while true

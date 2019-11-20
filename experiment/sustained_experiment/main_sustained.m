@@ -2,7 +2,6 @@
 % Run through experiment. Does numRuns runs of attention experiment
 % and one run of orientation localizer.
 
-% XXX: XXX
 % MAin Task: TR 1.5,    234 images
 % Localizer: TR 1.5,    226 images
 
@@ -14,7 +13,7 @@ cfg.do_localizer = 0; %
 cfg.do_mainTask  = 1;
 cfg.do_retinotopy= 0;
 
-cfg.debug =0; % Check debugmode
+cfg.debug =1; % Check debugmode
 
 cfg.computer_environment = 'mri'; % could be "mri", "dummy", "work_station", "behav" "t480s"
 cfg.mri_scanner = 'prisma'; % could be "trio", "avanto","prisma", "essen"
@@ -30,14 +29,14 @@ cfg.TR = 1.5;
 
 cfg = setup_parameters(cfg);
 
-cfg.sustained.numRuns = 8; % Number of runs
+cfg.sustained.numRuns = 1; % Number of runs
 cfg.sustained.numBlocks = 12 ; % Number of trials in a run
-cfg.localizer.numRuns = 2;
-cfg.localizer.numBlocks = 10; % Total number of stimulus blocks (half as many per orientation)
+% cfg.localizer.numRuns = 2;
+% cfg.localizer.numBlocks = 10; % Total number of stimulus blocks (half as many per orientation)
 
 
 fprintf('Volumes to record Main Task: %.2f\n',((cfg.sustained.ITI + cfg.sustained.trialLengthfullTR)*cfg.sustained.numBlocks+cfg.sustained.scannerWaitTime)/cfg.TR)
-fprintf('Volumes to record Local: %.2f\n',((cfg.localizer.stimBlockLength+ cfg.localizer.stimBlockLength)*cfg.localizer.numBlocks+cfg.localizer.scannerWaitTime)/cfg.TR)
+% fprintf('Volumes to record Local: %.2f\n',((cfg.localizer.stimBlockLength+ cfg.localizer.stimBlockLength)*cfg.localizer.numBlocks+cfg.localizer.scannerWaitTime)/cfg.TR)
 
 %%
 
