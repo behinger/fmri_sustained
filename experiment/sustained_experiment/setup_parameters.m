@@ -23,7 +23,7 @@ cfg.sustained = struct();
 cfg.sustained.stimSize = 12; % Diameter in degrees
 cfg.sustained.refOrient = [45, 135]; % orientations for stimuli are 45 and 135 degrees
 cfg.sustained.spatialFrequency = 1; % cpd
-cfg.sustained.phases = linspace(0,2*pi,25);
+cfg.sustained.phases = linspace(0,2*pi,13);
 cfg.sustained.phases(end) = []; %delete last one as 0 = 2*pi
 cfg.sustained.spatialFrequency_catch = 1.25;
 
@@ -58,7 +58,7 @@ cfg.localizer.orientation = [45 135];
 
 
 cfg.localizer.stimBlockLength = round(16/cfg.TR)*cfg.TR; %
-cfg.localizer.offBlockLength = round(122/cfg.TR)*cfg.TR; %
+cfg.localizer.offBlockLength = round(14/cfg.TR)*cfg.TR; %
 
 cfg.localizer.scannerWaitTime = cfg.TR * 4; % Time to wait after scan pulse - must be multiple of TR
     

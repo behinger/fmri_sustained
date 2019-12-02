@@ -15,10 +15,10 @@ cfg.do_retinotopy= 0;
 
 cfg.debug =1; % Check debugmode
 
-cfg.computer_environment = 'mri'; % could be "mri", "dummy", "work_station", "behav" "t480s"
+cfg.computer_environment = 't480s'; % could be "mri", "dummy", "work_station", "behav" "t480s"
 cfg.mri_scanner = 'prisma'; % could be "trio", "avanto","prisma", "essen"
-cfg.TR = 1.5;
-% cfg.TR = 2.336; % CAIPI sequence Essen
+% cfg.TR = 1.5;
+cfg.TR = 2.336; % CAIPI sequence Essen
 
 % cfg.TR = 1.500; % 213 image volumes to be recorded
     

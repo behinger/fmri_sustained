@@ -17,7 +17,7 @@ for runNum = 1:numRuns
     
     
     % determine whether we use same or different stimuli trialtype
-    condition_dict = {'continuous_6s','flashed_6s','continuous_8s','flashed_8s','continuous_4s','flashed_4s'}; %=> 2*50ms, 2*125ms, 2*1000ms
+    condition_dict = {'continuous-8s','flashed-8s'};
     %     condition_dict = [18,12,2]; %=> 2*50ms, 2*125ms, 2*1000ms
     condition = repmat([0:length(condition_dict)-1],1,numBlocks/length(condition_dict));
     

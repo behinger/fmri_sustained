@@ -137,30 +137,30 @@ for blockNum = 1:nblocks
     
     switch randomization_run.condition{blockNum}
         
-        case 'continuous_4s'
+        case 'continuous-4s'
             singleStimDuration = 4; 
             stimOffDuration = 0;
             params.trialLength = 4;
-        case 'continuous_6s'
+        case 'continuous-6s'
             singleStimDuration = 6; 
             stimOffDuration = 0;
             params.trialLength = 6;
-        case 'continuous_8s'
+        case 'continuous-8s'
             singleStimDuration = 8; 
             stimOffDuration = 0;
             params.trialLength = 8;
             
-        case 'flashed_4s'
+        case 'flashed-4s'
             singleStimDuration = 2*2*cfg.halfifi;
             params.trialLength = 4;
             n = 16; % siglani 2017, 30 stimuli a 2Frames in 8s
             stimOffDuration = (4-n*2*2*cfg.halfifi)/n;
-        case 'flashed_6s'
+        case 'flashed-6s'
             singleStimDuration = 2*2*cfg.halfifi;
             n = 24; % siglani 2017, 30 stimuli a 2Frames in 8s
             stimOffDuration = (6-n*2*2*cfg.halfifi)/n;
             params.trialLength = 6;
-        case 'flashed_8s'
+        case 'flashed-8s'
             singleStimDuration = 2*2*cfg.halfifi;
             n = 30; % siglani 2017, 30 stimuli a 2Frames in 8s
             stimOffDuration = (8-n*2*2*cfg.halfifi)/n;
