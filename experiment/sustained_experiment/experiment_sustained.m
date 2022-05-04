@@ -224,18 +224,26 @@ for blockNum = 1:nblocks
     end
     
     Screen('FillRect',cfg.win,cfg.background)
+    % Draw Mask against afterimage
+    for k = 1:6
+        
+    Screen('DrawTexture',cfg.win,cfg.stimTexPlaid(1+mod(k,2)*6),[],[])
+    
     draw_fixationdot(cfg,params.dotSize)
-   
-    onset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi)-startTime;
+    
+    
+    onset = Screen('Flip', cfg.win, startTime + expectedTime - cfg.halfifi+params.ITI/6*(k-1))-startTime;
     add_log_entry('breakOnset',onset);
    %% 
     
     % overwrite expected Time to catch up with minor fluctiations in
     % expected Time
 %     expectedTime = expectedTime_start+params.trialLengthfullTR + params.ITI;
+    
+    
+    end
     trialLengthfullTR = ceil(singleStimDuration/cfg.TR)*cfg.TR;
     expectedTime = expectedTime_start+trialLengthfullTR + params.ITI;
-    
     % Read out all the button presses
     while true
         

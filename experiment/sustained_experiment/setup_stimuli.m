@@ -20,13 +20,16 @@ for i = 1:length(params.phases)
     
     cfg.stimTex(i) = Screen('MakeTexture', cfg.win, stim);
     tmp = params;
-    tmp.pinkNoise = 1;
-    stimPinkNoise = makeStimulus(cfg,tmp);
+    tmp.plaid = 1;
+    stimPlaid = makeStimulus(cfg,tmp);
+    cfg.stimTexPlaid(i) = Screen('MakeTexture',cfg.win,stimPlaid);
+%     tmp.pinkNoise = 1;
+%     stimPinkNoise = makeStimulus(cfg,tmp);
 
 
 
     
-    cfg.stimTexPinkNoise(i) = Screen('MakeTexture',cfg.win,stimPinkNoise);
+%     cfg.stimTexPinkNoise(i) = Screen('MakeTexture',cfg.win,stimPinkNoise);
     
 end
 stimMask= stim;

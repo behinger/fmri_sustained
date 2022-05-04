@@ -78,7 +78,7 @@ elseif isfield(params,'plaid') && params.plaid>0
 %     assert(length(phase_x(:))==length(params.phases))
 %     stimulusMatrix = (sin(radiansPerPixel * x+phase_x(params.plaid)) + sin(radiansPerPixel*y+phase_y(params.plaid)))/2;
 
-    stimulusMatrix = (sin(radiansPerPixel(1) * x+params.phaseGrating+pi) + sin(radiansPerPixel(2)*y+params.phaseGrating+pi))/2;
+    stimulusMatrix = (sin(radiansPerPixel(1) * x+params.phaseGrating+pi) + sin(radiansPerPixel(end)*y+params.phaseGrating+pi))/2;
     
 else
     % Creates a sinusoidal grating, where the period of the sinusoid is
